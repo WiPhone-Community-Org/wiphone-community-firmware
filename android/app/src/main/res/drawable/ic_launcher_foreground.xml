@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- A map pin with two signal arcs: this phone's position, sent over the air. 108 dp canvas,
+     scaled into the 66 dp safe circle. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group
+        android:pivotX="54"
+        android:pivotY="54"
+        android:scaleX="0.85"
+        android:scaleY="0.85"
+        android:translateY="3">
+    <path
+        android:fillColor="#FFFFFF"
+        android:fillType="evenOdd"
+        android:pathData="M48,32 C57.94,32 66,40.06 66,50 C66,62 48,78 48,78 C48,78 30,62 30,50 C30,40.06 38.06,32 48,32 Z M48,43 C44.13,43 41,46.13 41,50 C41,53.87 44.13,57 48,57 C51.87,57 55,53.87 55,50 C55,46.13 51.87,43 48,43 Z" />
+    <path
+        android:strokeColor="#A5D6A7"
+        android:strokeWidth="4"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000"
+        android:pathData="M64,30 A16,16 0 0 1 74,40" />
+    <path
+        android:strokeColor="#A5D6A7"
+        android:strokeWidth="4"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000"
+        android:pathData="M66,22 A26,26 0 0 1 82,38" />
+    </group>
+</vector>

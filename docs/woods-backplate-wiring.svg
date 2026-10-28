@@ -1,0 +1,558 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1620 2270" font-family="Helvetica,Arial,sans-serif">
+<!-- ============================================================================
+  WOODS BACKPLATE - LEG-BY-LEG WIRING SHEET (companion to woods-backplate.svg gist)
+  Every pad drawn, every wire numbered (W#), every unused pad crossed out.
+  2026-08-22 v2: the rail is DUAL-SOURCED. D1/D2 OR the PowerBoost's 5.2 V and the
+  phone's own VBAT into one BUCK-BOOST, so the radio and GPS survive a dead external
+  pack. v1's TLV62569 could not do this - a BUCK needs >3.4 V in and a 1S cell ends
+  at 3.0 V. The PowerBoost STAYS: it still charges the phone through W4 and still
+  charges its own pack over its microUSB. Nothing about v2 removes a charging path.
+  2026-08-22: R3-R6 added (4x 1 kOhm, series, phone-driven lines only) after the
+  phantom-power measurement: pack dead + phone alive back-fed the plate through
+  ESD clamps to 2.54 V - enough to run the RFM95W and fake a healthy radio.
+  Sources verified 2026-08-20:
+    RFM95W pads: HopeRF RFM95W-V2.0 datasheet Table 2 (p.11) + Figure 2 (p.10)
+    Terminals:   WiPhone Header Breakout official doc
+    PowerBoost/TLV62569 pads: Adafruit product + learn pages
+    Architecture: woods-backplate.md + woods-backplate-bom.md (2026-08-11 revision)
+============================================================================= -->
+<style>
+  .bg{fill:#ffffff}
+  .box{fill:#fff;stroke:#333;stroke-width:2}
+  .hdr{fill:#eef3fb;stroke:#2b5fa8;stroke-width:2}
+  .rf{fill:#eafaf1;stroke:#1e8a5a;stroke-width:2}
+  .gps{fill:#fff4e6;stroke:#c47a1a;stroke-width:2}
+  .pwr{fill:#f4effa;stroke:#6b3fa0;stroke-width:2}
+  .warn{fill:#fdeaea;stroke:#b03030;stroke-width:2}
+  .chk{fill:#fffbe8;stroke:#8a7a1e;stroke-width:2}
+  .tt{font-size:16px;font-weight:bold;fill:#111}
+  .t{font-size:13px;fill:#111}
+  .ts{font-size:11px;fill:#444}
+  .tw{font-size:12px;fill:#b03030;font-weight:bold}
+  .tk{font-size:11.5px;fill:#111}
+  .note{font-size:11px;fill:#666}
+  .pin{font-size:12.5px;fill:#111}
+  .pinno{font-size:10px;fill:#777}
+  .wtag{font-size:10.5px;font-weight:bold;fill:#fff}
+  .nc{font-size:12px;font-weight:bold;fill:#b03030}
+  /* nets */
+  .w5v{stroke:#c0392b;stroke-width:2.6;fill:none}
+  .wbat{stroke:#8b1a1a;stroke-width:2.6;fill:none}
+  .w33{stroke:#e07b00;stroke-width:2.4;fill:none}
+  .wgnd{stroke:#444;stroke-width:3;fill:none}
+  .wspi{stroke:#2b5fa8;stroke-width:2;fill:none}
+  .wuart{stroke:#0f8b8b;stroke-width:2;fill:none}
+  .wrf{stroke:#1e8a5a;stroke-width:3.4;fill:none}
+  .wen{stroke:#7d3fbf;stroke-width:2;fill:none;stroke-dasharray:7 4}
+  .leg{stroke:#111;stroke-width:1.6;fill:none}
+</style>
+<rect x="0" y="0" width="1620" height="2270" class="bg"/>
+
+<!-- ===================== TITLE BLOCK ===================== -->
+<text x="24" y="34" class="tt" font-size="21">WiPhone woods backplate — WIRING SHEET (every leg, every pad)</text>
+<text x="24" y="56" class="note">Rev 2026-08-22 <tspan font-weight="bold">v2</tspan> (R3–R7 + dual-source rail) · pads verified 2026-08-20 · companion to woods-backplate.svg (the gist) · architecture per woods-backplate.md + BOM 2026-08-11 (PowerBoost feeds the buck — NOT VBAT)</text>
+<text x="24" y="72" class="note">RFM95W pads verified against HopeRF datasheet V2.0 Table 2 + Figure 2 · terminal names verified against WiPhone's Header Breakout doc · Adafruit pad names from product/learn pages</text>
+
+<!-- legend -->
+<rect x="24" y="86" width="1572" height="86" fill="#f7f7f7" stroke="#bbb" stroke-width="1.5"/>
+<text x="36" y="106" class="t" font-weight="bold">HOW TO READ THIS SHEET</text>
+<line x1="36" y1="122" x2="86" y2="122" class="w5v"/><text x="92" y="126" class="ts">5.2 V (PowerBoost out)</text>
+<line x1="36" y1="142" x2="86" y2="142" class="wbat"/><text x="92" y="146" class="ts">battery + · phone VBAT (v2)</text>
+<line x1="36" y1="162" x2="86" y2="162" class="w33"/><text x="92" y="166" class="ts">3V3_PLATE (buck-boost out)</text>
+<line x1="250" y1="122" x2="300" y2="122" class="wgnd"/><text x="306" y="126" class="ts">GND</text>
+<line x1="250" y1="142" x2="300" y2="142" class="wspi"/><text x="306" y="146" class="ts">SPI (4 wires)</text>
+<line x1="250" y1="162" x2="300" y2="162" class="wuart"/><text x="306" y="166" class="ts">GPS UART (2 wires)</text>
+<line x1="420" y1="122" x2="470" y2="122" class="wrf"/><text x="476" y="126" class="ts">RF coax</text>
+<line x1="420" y1="142" x2="470" y2="142" class="wen"/><text x="476" y="146" class="ts">EN sense (µA only)</text>
+<circle cx="445" cy="162" r="4" fill="#111"/><text x="476" y="166" class="ts">dot = CONNECTED junction</text>
+<text x="640" y="126" class="ts">wires CROSSING without a dot are NOT connected</text>
+<text x="640" y="146" class="ts"><tspan class="nc">✗ NC</tspan> = leave the pad EMPTY on purpose — every pad on this sheet is either wired or ✗</text>
+<text x="640" y="166" class="ts">W# tags match the RUN LIST at the bottom — build from the list, confirm against the picture</text>
+<text x="1240" y="126" class="ts">every wire lands on a NAMED pad —</text>
+<text x="1240" y="146" class="ts">go by the printed silk names on each</text>
+<text x="1240" y="166" class="ts">board, never by counted positions</text>
+
+<!-- ===================== HEADER BREAKOUT (screw terminals) ===================== -->
+<rect x="40" y="210" width="260" height="772" class="hdr"/>
+<text x="54" y="234" class="tt">Header Breakout plate</text>
+<text x="54" y="252" class="ts">screw terminals — labels as on the silk</text>
+<!-- terminals -->
+<g>
+  <!-- 5V -->
+  <circle cx="282" cy="286" r="9" fill="#fff" stroke="#2b5fa8" stroke-width="2"/><circle cx="282" cy="286" r="3.5" fill="#c0392b"/>
+  <text x="60" y="291" class="pin" font-weight="bold">5V</text><text x="104" y="291" class="ts">USB VBUS · 5.2 V IN ↓</text>
+  <!-- VBAT -->
+  <circle cx="282" cy="324" r="9" fill="#fff" stroke="#2b5fa8" stroke-width="2"/><circle cx="282" cy="324" r="3.5" fill="#8b1a1a"/>
+  <text x="60" y="329" class="pin" font-weight="bold">VBAT</text><text x="116" y="329" class="tw">→ D2 → rail (v2) →</text>
+  <!-- 3.3V -->
+  <circle cx="282" cy="362" r="9" fill="#fff" stroke="#2b5fa8" stroke-width="2"/><circle cx="282" cy="362" r="3.5" fill="#7d3fbf"/>
+  <text x="60" y="367" class="pin" font-weight="bold">3.3V</text><text x="116" y="367" class="ts">→ buck-boost EN (sense) ↓</text>
+  <!-- GND -->
+  <circle cx="282" cy="400" r="9" fill="#fff" stroke="#2b5fa8" stroke-width="2"/><circle cx="282" cy="400" r="3.5" fill="#444"/>
+  <text x="60" y="405" class="pin" font-weight="bold">GND</text><text x="116" y="405" class="ts">common with phone</text>
+  <!-- DB_RXD -->
+  <circle cx="282" cy="438" r="9" fill="#fff" stroke="#2b5fa8" stroke-width="2"/><circle cx="282" cy="438" r="3.5" fill="#0f8b8b"/>
+  <text x="60" y="443" class="pin" font-weight="bold">DB_RXD</text><text x="136" y="443" class="ts">G38 in-only ←GPS TX</text>
+  <!-- DB_TXD -->
+  <circle cx="282" cy="476" r="9" fill="#fff" stroke="#2b5fa8" stroke-width="2"/><circle cx="282" cy="476" r="3.5" fill="#0f8b8b"/>
+  <text x="60" y="481" class="pin" font-weight="bold">DB_TXD</text><text x="136" y="481" class="ts">G32 · → GPS RX</text>
+  <!-- MISO -->
+  <circle cx="282" cy="514" r="9" fill="#fff" stroke="#2b5fa8" stroke-width="2"/><circle cx="282" cy="514" r="3.5" fill="#2b5fa8"/>
+  <text x="60" y="519" class="pin" font-weight="bold">DB_SPI_MISO</text><text x="186" y="519" class="ts">GPIO 12</text>
+  <!-- MOSI -->
+  <circle cx="282" cy="552" r="9" fill="#fff" stroke="#2b5fa8" stroke-width="2"/><circle cx="282" cy="552" r="3.5" fill="#2b5fa8"/>
+  <text x="60" y="557" class="pin" font-weight="bold">DB_SPI_MOSI</text><text x="186" y="557" class="ts">GPIO 13</text>
+  <!-- CLK -->
+  <circle cx="282" cy="590" r="9" fill="#fff" stroke="#2b5fa8" stroke-width="2"/><circle cx="282" cy="590" r="3.5" fill="#2b5fa8"/>
+  <text x="60" y="595" class="pin" font-weight="bold">DB_SPI_CLK</text><text x="186" y="595" class="ts">GPIO 14</text>
+  <!-- CS -->
+  <circle cx="282" cy="628" r="9" fill="#fff" stroke="#2b5fa8" stroke-width="2"/><circle cx="282" cy="628" r="3.5" fill="#2b5fa8"/>
+  <text x="60" y="633" class="pin" font-weight="bold">DB_SPI_CS</text><text x="186" y="633" class="ts">GPIO 27</text>
+  <!-- I2C + D0-D5 unused -->
+  <circle cx="282" cy="666" r="9" fill="#fff" stroke="#2b5fa8" stroke-width="2"/><text x="266" y="654" class="nc">✗</text>
+  <text x="60" y="671" class="pin">I2C_SCL</text><text x="146" y="671" class="ts">GPIO 25 — unused</text>
+  <circle cx="282" cy="704" r="9" fill="#fff" stroke="#2b5fa8" stroke-width="2"/><text x="266" y="692" class="nc">✗</text>
+  <text x="60" y="709" class="pin">I2C_SDA</text><text x="146" y="709" class="ts">GPIO 15 — unused</text>
+  <circle cx="282" cy="742" r="9" fill="#fff" stroke="#2b5fa8" stroke-width="2"/><text x="266" y="730" class="nc">✗</text>
+  <text x="60" y="747" class="pin">D0 … D5</text><text x="146" y="747" class="ts">SX1509 — unused</text>
+</g>
+<line x1="54" y1="764" x2="286" y2="764" stroke="#2b5fa8" stroke-width="1"/>
+<text x="54" y="784" class="ts">⚠ COUNT these terminals on the physical</text>
+<text x="54" y="800" class="ts">plate against this list (design doc item 3).</text>
+<text x="54" y="824" class="tw">5V is an INPUT on this plate.</text>
+<text x="54" y="840" class="ts">Never DRAW from it — 0 V on battery,</text>
+<text x="54" y="856" class="ts">sags past the fuse/diode under load.</text>
+<text x="54" y="872" class="ts">The pack PUSHES 5.2 V in (Mega-style).</text>
+<text x="54" y="894" class="tw">3.3V = sense wire only (µA).</text>
+<text x="54" y="910" class="ts">MIC5219 behind it: 150–200 mA total.</text>
+<text x="54" y="926" class="ts">Never power the plate from it.</text>
+<text x="54" y="946" class="tw">VBAT is LIVE in v2 (was empty).</text>
+<text x="54" y="962" class="ts">The phone's own cell, via D2, as the</text>
+<text x="54" y="978" class="ts">rail's fallback. DRAW only, never push.</text>
+
+<!-- ===================== v2 RATIONALE ===================== -->
+<g>
+  <rect x="40" y="1010" width="262" height="296" class="warn"/>
+  <text x="52" y="1034" class="tt">v2 — VBAT FEEDS THE RAIL</text>
+  <text x="52" y="1056" class="tk">Measured 2026-08-22: when the external pack</text>
+  <text x="52" y="1072" class="tk">dies, radio and GPS die with it — and the</text>
+  <text x="52" y="1088" class="tk">phone can outlive them by hours.</text>
+  <text x="52" y="1112" class="tk">v1 fed the rail from the PowerBoost alone.</text>
+  <text x="52" y="1128" class="tk">The TLV62569 could not take VBAT: a BUCK</text>
+  <text x="52" y="1144" class="tk">needs &gt;3.4 V in; a 1S cell ends at 3.0 V.</text>
+  <text x="52" y="1160" class="tk">A BUCK-BOOST has no such floor.</text>
+  <text x="52" y="1184" class="tk">D1/D2 OR both sources into one input:</text>
+  <text x="52" y="1200" class="tk">pack alive → 5.2 V wins, the phone's cell is</text>
+  <text x="52" y="1216" class="tk">untouched (v1 behaviour, kept). Pack dead →</text>
+  <text x="52" y="1232" class="tk">VBAT takes over. No logic, no firmware.</text>
+  <text x="52" y="1256" class="tw">D2's REVERSE BLOCKING is critical:</text>
+  <text x="52" y="1272" class="tk">it stops 4.9 V back-feeding VBAT and</text>
+  <text x="52" y="1288" class="tk">uncontrolled-charging the phone's cell.</text>
+</g>
+
+<!-- ===================== RFM95W (drawn to Figure 2, top view) ===================== -->
+<rect x="760" y="210" width="310" height="330" class="rf"/>
+<text x="774" y="236" class="tt">RFM95W — TOP view</text>
+<text x="774" y="253" class="ts">pads exactly as HopeRF Figure 2</text>
+<!-- left edge pads 1-8 top to bottom -->
+<g>
+  <circle cx="760" cy="278" r="8" fill="#fff" stroke="#1e8a5a" stroke-width="2"/><text x="742" y="271" class="pinno">1</text>
+  <text x="776" y="283" class="pin" font-weight="bold">GND</text>
+  <circle cx="760" cy="314" r="8" fill="#fff" stroke="#1e8a5a" stroke-width="2"/><text x="742" y="307" class="pinno">2</text>
+  <text x="776" y="319" class="pin" font-weight="bold">MISO</text>
+  <circle cx="760" cy="350" r="8" fill="#fff" stroke="#1e8a5a" stroke-width="2"/><text x="742" y="343" class="pinno">3</text>
+  <text x="776" y="355" class="pin" font-weight="bold">MOSI</text>
+  <circle cx="760" cy="386" r="8" fill="#fff" stroke="#1e8a5a" stroke-width="2"/><text x="742" y="379" class="pinno">4</text>
+  <text x="776" y="391" class="pin" font-weight="bold">SCK</text>
+  <circle cx="760" cy="422" r="8" fill="#fff" stroke="#1e8a5a" stroke-width="2"/><text x="742" y="415" class="pinno">5</text>
+  <text x="776" y="427" class="pin" font-weight="bold">NSS</text>
+  <circle cx="760" cy="458" r="8" fill="#fff" stroke="#1e8a5a" stroke-width="2"/><text x="742" y="451" class="pinno">6</text>
+  <text x="776" y="463" class="pin">RESET</text><text x="838" y="463" class="ts">NC (or R2 10k→3V3)</text>
+  <circle cx="760" cy="494" r="8" fill="#fff" stroke="#1e8a5a" stroke-width="2"/><text x="742" y="487" class="pinno">7</text>
+  <text x="776" y="499" class="pin">DIO5</text><text x="826" y="499" class="nc">✗ NC</text>
+  <circle cx="760" cy="530" r="8" fill="#fff" stroke="#1e8a5a" stroke-width="2"/><text x="742" y="523" class="pinno">8</text>
+  <text x="776" y="535" class="pin">GND</text><text x="820" y="535" class="ts">ok empty (gnd = pad 10)</text>
+</g>
+<!-- right edge pads 16..9 top to bottom -->
+<g>
+  <circle cx="1070" cy="278" r="8" fill="#fff" stroke="#1e8a5a" stroke-width="2"/><text x="1080" y="271" class="pinno">16</text>
+  <text x="1012" y="283" class="pin">DIO2</text><text x="968" y="283" class="nc">✗ NC</text>
+  <circle cx="1070" cy="314" r="8" fill="#fff" stroke="#1e8a5a" stroke-width="2"/><text x="1080" y="307" class="pinno">15</text>
+  <text x="1012" y="319" class="pin">DIO1</text><text x="968" y="319" class="nc">✗ NC</text>
+  <circle cx="1070" cy="350" r="8" fill="#fff" stroke="#b03030" stroke-width="3"/><text x="1080" y="343" class="pinno">14</text>
+  <text x="1012" y="355" class="pin" font-weight="bold" fill="#b03030">DIO0</text><text x="962" y="355" class="nc">✗ NC</text>
+  <circle cx="1070" cy="386" r="8" fill="#fff" stroke="#1e8a5a" stroke-width="2"/><text x="1080" y="379" class="pinno">13</text>
+  <text x="1008" y="391" class="pin" font-weight="bold">3.3V</text>
+  <circle cx="1070" cy="422" r="8" fill="#fff" stroke="#1e8a5a" stroke-width="2"/><text x="1080" y="415" class="pinno">12</text>
+  <text x="1012" y="427" class="pin">DIO4</text><text x="968" y="427" class="nc">✗ NC</text>
+  <circle cx="1070" cy="458" r="8" fill="#fff" stroke="#1e8a5a" stroke-width="2"/><text x="1080" y="451" class="pinno">11</text>
+  <text x="1012" y="463" class="pin">DIO3</text><text x="968" y="463" class="nc">✗ NC</text>
+  <circle cx="1070" cy="494" r="8" fill="#fff" stroke="#1e8a5a" stroke-width="2"/><text x="1080" y="487" class="pinno">10</text>
+  <text x="1008" y="499" class="pin" font-weight="bold">GND</text>
+  <circle cx="1070" cy="530" r="8" fill="#fff" stroke="#1e8a5a" stroke-width="2"/><text x="1080" y="523" class="pinno">9</text>
+  <text x="1012" y="535" class="pin" font-weight="bold">ANT</text>
+</g>
+<text x="764" y="560" class="note">module carries its own decoupling — C1/C2 are belt-and-braces</text>
+<text x="764" y="576" class="tw">R7 10 kΩ: NSS ↔ 3V3_PLATE — REQUIRED (drawn below)</text>
+
+<!-- DIO0 warning callout -->
+<rect x="1130" y="210" width="466" height="118" class="warn"/>
+<text x="1144" y="232" class="tw">THE ONE DELIBERATE DEVIATION FROM THE STOCK PLATE</text>
+<text x="1144" y="252" class="tk">Stock v2.0 ties DIO0 (pad 14) → GPIO 38. This plate LEAVES PAD 14 EMPTY —</text>
+<text x="1144" y="268" class="tk">GPIO 38 is the only input-capable UART pin on the header, and the GPS gets it.</text>
+<text x="1144" y="284" class="tk">Safe ONLY because mesh_phy.cpp POLLS (never calls attachInterrupt).</text>
+<text x="1144" y="300" class="tw">If the Meshtastic PHY is ever made interrupt-driven, this plate breaks.</text>
+<text x="1144" y="316" class="tk">If you see a wire on pad 14, it is WRONG. Cross-check before power.</text>
+<path d="M1130 300 L1082 344" stroke="#b03030" stroke-width="2" fill="none" marker-end="url(#arr)"/>
+<defs><marker id="arr" markerWidth="10" markerHeight="8" refX="8" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#b03030"/></marker></defs>
+
+<!-- R7 (v2, REQUIRED): NSS pull-up to the PLATE rail, drawn like every other part.
+     Tapped chip-side of R5 so it holds the RFM's own NSS pin, and referenced to
+     3V3_PLATE so it adds no phantom feed when the pack dies. -->
+<g>
+  <circle cx="730" cy="422" r="4" fill="#2b5fa8"/>
+  <polyline class="leg" points="730,422 730,620 1185,620"/>
+  <rect x="880" y="612" width="56" height="16" fill="#fff" stroke="#111" stroke-width="1.8"/>
+  <text x="884" y="624" class="tk">R7 10k</text>
+  <circle cx="1185" cy="620" r="4" fill="#e07b00"/>
+  <text x="944" y="608" class="ts">NSS ↔ 3V3_PLATE — REQUIRED (boot strap)</text>
+</g>
+
+<!-- ===================== SPI wires W13-W16 ===================== -->
+<g>
+  <polyline class="wspi" points="291,514 600,514 600,314 752,314"/>
+  <polyline class="wspi" points="291,552 622,552 622,350 752,350"/>
+  <polyline class="wspi" points="291,590 644,590 644,386 752,386"/>
+  <polyline class="wspi" points="291,628 666,628 666,422 752,422"/>
+  <rect x="380" y="503" width="34" height="17" rx="3" fill="#2b5fa8"/><text x="386" y="516" class="wtag">W13</text>
+  <rect x="380" y="541" width="34" height="17" rx="3" fill="#2b5fa8"/><text x="386" y="554" class="wtag">W14</text>
+  <rect x="380" y="579" width="34" height="17" rx="3" fill="#2b5fa8"/><text x="386" y="592" class="wtag">W15</text>
+  <rect x="380" y="617" width="34" height="17" rx="3" fill="#2b5fa8"/><text x="386" y="630" class="wtag">W16</text>
+  <!-- R3-R5: 1 kOhm IN the three phone-driven SPI lines (added 2026-08-22).
+       W13 MISO gets NONE - the RFM drives it, and the EN gate means the plate
+       is never powered while the phone is off, so that direction has no
+       phantom case. -->
+  <rect x="470" y="545" width="40" height="14" class="box"/><text x="516" y="548" class="ts">R3 1 kΩ</text>
+  <rect x="470" y="583" width="40" height="14" class="box"/><text x="516" y="586" class="ts">R4 1 kΩ</text>
+  <rect x="470" y="621" width="40" height="14" class="box"/><text x="516" y="624" class="ts">R5 1 kΩ</text>
+  <text x="372" y="662" class="ts">SPI copies NAMES side to side —</text>
+  <text x="372" y="678" class="ts">MISO→MISO, MOSI→MOSI. No crossing.</text>
+  <text x="372" y="694" class="ts">Only the UART below crosses.</text>
+</g>
+
+<!-- ===================== WHY R3-R6 EXIST ===================== -->
+<g>
+  <rect x="372" y="706" width="300" height="164" class="warn"/>
+  <text x="384" y="728" class="tw">WHY R3–R6 EXIST — measured 2026-08-22</text>
+  <text x="384" y="748" class="tk">Pack dead + phone alive = the phone's driven</text>
+  <text x="384" y="764" class="tk">pins back-feed the plate through ESD clamps:</text>
+  <text x="384" y="780" class="tk">3V3_PLATE floated at 2.54 V (a diode under 3.3),</text>
+  <text x="384" y="796" class="tk">the 5 V node at 2.18 V (backwards via the TLV).</text>
+  <text x="384" y="812" class="tk">An RFM95W runs at 2.5 V — it answered its</text>
+  <text x="384" y="828" class="tk">version probe, the phone said READY, RX worked,</text>
+  <text x="384" y="844" class="tk">TX silently impossible. 1 kΩ caps each clamp at</text>
+  <text x="384" y="860" class="tk">~2 mA, the rail collapses, absence reads honest.</text>
+</g>
+
+<!-- ===================== GPS (M100 Mini) ===================== -->
+<rect x="790" y="1000" width="310" height="190" class="gps"/>
+<text x="804" y="1026" class="tt">HGLRC M100 Mini GPS</text>
+<text x="804" y="1043" class="ts">4 pads — order as printed on YOUR module's silk</text>
+<g>
+  <circle cx="790" cy="1072" r="8" fill="#fff" stroke="#c47a1a" stroke-width="2"/>
+  <text x="806" y="1077" class="pin" font-weight="bold">GND</text>
+  <circle cx="790" cy="1108" r="8" fill="#fff" stroke="#c47a1a" stroke-width="2"/>
+  <text x="806" y="1113" class="pin" font-weight="bold">5V</text><text x="842" y="1113" class="tw">← gets 3V3_PLATE (silk lies)</text>
+  <circle cx="790" cy="1144" r="8" fill="#fff" stroke="#c47a1a" stroke-width="2"/>
+  <text x="806" y="1149" class="pin" font-weight="bold">TX</text><text x="842" y="1149" class="ts">GPS talks → DB_RXD (G38)</text>
+  <circle cx="790" cy="1180" r="8" fill="#fff" stroke="#c47a1a" stroke-width="2"/>
+  <text x="806" y="1185" class="pin" font-weight="bold">RX</text><text x="842" y="1185" class="ts">GPS listens ← DB_TXD (G32)</text>
+</g>
+<text x="804" y="1206" class="note">module takes 3.3–5 V · all-3.3 V logic, no level shifters</text>
+
+<!-- UART wires W17, W18 (crossed on purpose) -->
+<g>
+  <polyline class="wuart" points="291,438 700,438 700,1144 782,1144"/>
+  <polyline class="wuart" points="291,476 680,476 680,1180 782,1180"/>
+  <rect x="380" y="427" width="34" height="17" rx="3" fill="#0f8b8b"/><text x="386" y="440" class="wtag">W17</text>
+  <rect x="380" y="465" width="34" height="17" rx="3" fill="#0f8b8b"/><text x="386" y="478" class="wtag">W18</text>
+  <rect x="470" y="469" width="40" height="14" class="box"/><text x="516" y="472" class="ts">R6 1 kΩ</text>
+  <rect x="410" y="880" width="250" height="84" class="warn"/>
+  <text x="424" y="900" class="tw">UART CROSSES. SPI DOES NOT.</text>
+  <text x="424" y="917" class="tk">W17: GPS TX → DB_RXD (38) — no R</text>
+  <text x="424" y="933" class="tk">W18: GPS RX ← DB_TXD (32) — R6 1 kΩ</text>
+  <text x="424" y="950" class="tk">R6 in the PHONE-driven line only</text>
+</g>
+
+<!-- GPS decoupling C3/C4 -->
+<g>
+  <line x1="782" y1="1072" x2="560" y2="1072" class="leg"/>
+  <line x1="782" y1="1108" x2="560" y2="1108" class="leg"/>
+  <!-- C3 100n -->
+  <line x1="618" y1="1072" x2="618" y2="1083" class="leg"/><line x1="610" y1="1083" x2="626" y2="1083" stroke="#111" stroke-width="2"/>
+  <line x1="610" y1="1090" x2="626" y2="1090" stroke="#111" stroke-width="2"/><line x1="618" y1="1090" x2="618" y2="1108" class="leg"/>
+  <text x="606" y="1064" class="tk">C3</text>
+  <!-- C4 bulk -->
+  <line x1="576" y1="1072" x2="576" y2="1083" class="leg"/><line x1="568" y1="1083" x2="584" y2="1083" stroke="#111" stroke-width="2"/>
+  <line x1="568" y1="1090" x2="584" y2="1090" stroke="#111" stroke-width="2"/><line x1="576" y1="1090" x2="576" y2="1108" class="leg"/>
+  <text x="564" y="1064" class="tk">C4</text>
+  <circle cx="618" cy="1072" r="3.5" fill="#111"/><circle cx="618" cy="1108" r="3.5" fill="#111"/>
+  <circle cx="576" cy="1072" r="3.5" fill="#111"/><circle cx="576" cy="1108" r="3.5" fill="#111"/>
+  <text x="470" y="1130" class="note">C3 100 nF · C4 22–47 µF · ceramic</text>
+  <text x="470" y="1144" class="note">legs: GND pad ↔ power pad · short</text>
+</g>
+
+<!-- ===================== RF CHAIN ===================== -->
+<rect x="1200" y="430" width="396" height="330" class="rf"/>
+<text x="1214" y="456" class="tt">RF chain — ANT pad 9 → whip</text>
+<text x="1214" y="478" class="tk" font-weight="bold">Coax from pad 9, run ≤ 5 mm:</text>
+<text x="1214" y="496" class="tk">· CENTER conductor → ANT (pad 9)</text>
+<text x="1214" y="512" class="tk">· BRAID → GND (pad 10, directly above)</text>
+<text x="1214" y="536" class="tk" font-weight="bold">Option a (recommended to start):</text>
+<text x="1214" y="552" class="tk">u.FL SMT receptacle at pad 9+10, then</text>
+<text x="1214" y="568" class="tk">Adafruit 851 clips on. Lets you A/B the whip</text>
+<text x="1214" y="584" class="tk">against the stock plate's known-good FPC antenna.</text>
+<text x="1214" y="604" class="tk" font-weight="bold">Option b (final build): cut the 851's u.FL off,</text>
+<text x="1214" y="620" class="tk">solder center→pad 9, braid→pad 10. One fewer joint.</text>
+<text x="1214" y="644" class="tk">851 pigtail → panel-mount SMA nut through the cover</text>
+<text x="1214" y="660" class="tk">→ 915 MHz whip, <tspan font-weight="bold">SMA MALE (not RP-SMA)</tspan></text>
+<text x="1214" y="686" class="tw">NEVER key up with no antenna fitted — it kills the PA.</text>
+<text x="1214" y="704" class="tw">Make the u.FL CLICK. A resting u.FL is COVEY's</text>
+<text x="1214" y="720" class="tw">deafness suspect. Strain-relieve at the battery edge.</text>
+<text x="1214" y="738" class="note">stock v2.0's R6 in this path is unmeasured —</text>
+<text x="1214" y="752" class="note">this plate uses plain coax, no series part</text>
+<!-- coax wire -->
+<polyline class="wrf" points="1078,530 1160,530 1160,560 1200,560"/>
+<rect x="1104" y="503" width="34" height="17" rx="3" fill="#1e8a5a"/><text x="1110" y="516" class="wtag">W19</text>
+<!-- braid stub -->
+<polyline class="wgnd" points="1078,494 1160,494 1160,522"/>
+<text x="1096" y="486" class="ts">braid</text>
+
+<!-- ===================== RFM decoupling C1/C2 ===================== -->
+<g>
+  <line x1="1078" y1="386" x2="1150" y2="386" class="leg"/>
+  <line x1="1078" y1="494" x2="1128" y2="494" class="leg"/>
+  <!-- C1 100n at x1118 -->
+  <line x1="1118" y1="386" x2="1118" y2="430" class="leg"/><line x1="1110" y1="430" x2="1126" y2="430" stroke="#111" stroke-width="2"/>
+  <line x1="1110" y1="437" x2="1126" y2="437" stroke="#111" stroke-width="2"/><line x1="1118" y1="437" x2="1118" y2="494" class="leg"/>
+  <text x="1096" y="424" class="tk">C1</text>
+  <!-- C2 10u at x1150 -->
+  <line x1="1150" y1="386" x2="1150" y2="430" class="leg"/><line x1="1142" y1="430" x2="1158" y2="430" stroke="#111" stroke-width="2"/>
+  <line x1="1142" y1="437" x2="1158" y2="437" stroke="#111" stroke-width="2"/><line x1="1150" y1="437" x2="1150" y2="453" class="leg"/>
+  <polyline class="leg" points="1150,453 1150,460 1128,460 1128,494"/>
+  <text x="1158" y="424" class="tk">C2</text>
+  <circle cx="1118" cy="386" r="3.5" fill="#111"/><circle cx="1150" cy="386" r="3.5" fill="#111"/>
+  <circle cx="1118" cy="494" r="3.5" fill="#111"/><circle cx="1128" cy="494" r="3.5" fill="#111"/>
+  <text x="1096" y="373" class="note">C1 100n · C2 10µ · pads 13↔10 · short</text>
+</g>
+
+<!-- ===================== POWER TRAIN ===================== -->
+<!-- LiPo -->
+<rect x="40" y="1320" width="210" height="150" class="pwr"/>
+<text x="54" y="1344" class="tt">1S LiPo (larger)</text>
+<text x="54" y="1362" class="ts">MUST have its own protection PCB</text>
+<circle cx="250" cy="1392" r="8" fill="#fff" stroke="#6b3fa0" stroke-width="2"/><text x="200" y="1397" class="pin" font-weight="bold" fill="#8b1a1a">+</text>
+<circle cx="250" cy="1440" r="8" fill="#fff" stroke="#6b3fa0" stroke-width="2"/><text x="200" y="1445" class="pin" font-weight="bold">−</text>
+<text x="54" y="1396" class="ts">JST-PH plug —</text>
+<text x="54" y="1412" class="ts">split-able for</text>
+<text x="54" y="1428" class="ts">separate charging</text>
+
+<!-- section label, clear of all wire lanes -->
+<text x="40" y="1508" class="tt">POWER TRAIN</text>
+<text x="40" y="1526" class="ts">pack pushes 5.2 V into the phone;</text>
+<text x="40" y="1541" class="ts">the plate makes its own 3.3 V</text>
+
+<!-- polyfuse -->
+<g>
+  <polyline class="wbat" points="258,1392 320,1392"/>
+  <rect x="320" y="1380" width="78" height="24" fill="#fff" stroke="#111" stroke-width="2"/>
+  <text x="324" y="1397" class="ts">F1 3 A GF300</text>
+  <polyline class="wbat" points="398,1392 440,1392"/>
+  <text x="290" y="1364" class="ts">polyfuse in the JST + leg</text>
+  <rect x="282" y="1404" width="30" height="16" rx="3" fill="#8b1a1a"/><text x="287" y="1416" class="wtag">W1</text>
+  <rect x="394" y="1404" width="30" height="16" rx="3" fill="#8b1a1a"/><text x="399" y="1416" class="wtag">W2</text>
+</g>
+<polyline class="wgnd" points="258,1440 440,1440"/>
+<rect x="330" y="1444" width="30" height="16" rx="3" fill="#444"/><text x="335" y="1456" class="wtag">W3</text>
+
+<!-- PowerBoost -->
+<rect x="440" y="1320" width="330" height="220" class="pwr"/>
+<text x="454" y="1344" class="tt">Adafruit PowerBoost 1000C</text>
+<text x="454" y="1361" class="ts">1 A charger + 5.2 V boost + load-share</text>
+<circle cx="440" cy="1392" r="8" fill="#fff" stroke="#6b3fa0" stroke-width="2"/><text x="452" y="1397" class="pin" font-weight="bold">JST +</text>
+<circle cx="440" cy="1440" r="8" fill="#fff" stroke="#6b3fa0" stroke-width="2"/><text x="452" y="1445" class="pin" font-weight="bold">JST −</text>
+<text x="452" y="1420" class="tw">watch JST polarity!</text>
+<!-- top pads -->
+<circle cx="560" cy="1320" r="8" fill="#fff" stroke="#6b3fa0" stroke-width="2"/><text x="546" y="1310" class="pin" font-weight="bold">5V</text>
+<circle cx="620" cy="1320" r="8" fill="#fff" stroke="#6b3fa0" stroke-width="2"/><text x="602" y="1310" class="pin" font-weight="bold">GND</text>
+<circle cx="680" cy="1320" r="8" fill="#fff" stroke="#6b3fa0" stroke-width="2"/><text x="670" y="1310" class="pin">EN</text><text x="664" y="1294" class="nc">✗</text>
+<circle cx="730" cy="1320" r="8" fill="#fff" stroke="#6b3fa0" stroke-width="2"/><text x="716" y="1310" class="pin">LBO</text><text x="740" y="1294" class="nc">✗</text>
+<text x="454" y="1468" class="ts">EN option later: panel switch EN→GND = pack off</text>
+<text x="454" y="1483" class="ts">microUSB jack = the pack's own charge-in</text>
+<text x="454" y="1498" class="ts"><tspan class="tw">do NOT solder the loose USB-A jack</tspan></text>
+<text x="454" y="1513" class="tw">⚠ Will not run without a LiPo attached — not optional.</text>
+<text x="454" y="1528" class="ts">BAT + USB pads also unused (✗) — via JST only</text>
+
+<!-- buck-boost (v2, replaces the TLV62569 buck) -->
+<rect x="880" y="1320" width="280" height="220" class="pwr"/>
+<text x="894" y="1344" class="tt">TPS63020 buck-boost</text>
+<text x="894" y="1361" class="ts">ORDERED 2026-08-22 · 2–5.5 V in · 26×18 mm</text>
+<circle cx="920" cy="1320" r="8" fill="#fff" stroke="#6b3fa0" stroke-width="2"/><text x="904" y="1310" class="pin" font-weight="bold">VIN</text>
+<circle cx="980" cy="1320" r="8" fill="#fff" stroke="#6b3fa0" stroke-width="2"/><text x="962" y="1310" class="pin" font-weight="bold">GND</text>
+<circle cx="1100" cy="1320" r="8" fill="#fff" stroke="#e07b00" stroke-width="2.5"/><text x="1080" y="1310" class="pin" font-weight="bold">OUT</text>
+<circle cx="1140" cy="1320" r="8" fill="#fff" stroke="#6b3fa0" stroke-width="2"/><text x="1130" y="1310" class="pin">PS</text>
+<text x="894" y="1386" class="tw">v2: fed from BOTH sources via D1/D2</text>
+<text x="894" y="1373" class="note">pads drawn by NET — go by the module's silk</text>
+<text x="894" y="1402" class="ts">pack 5.2 V wins while it lives;</text>
+<text x="894" y="1418" class="ts">VBAT takes over when it dies.</text>
+<text x="894" y="1438" class="ts">A BUCK-BOOST is required: a buck</text>
+<text x="894" y="1454" class="ts">(v1's TLV) drops out at 3.4 V in.</text>
+<text x="894" y="1476" class="tk" font-weight="bold">EN gate — UNCHANGED from v1:</text>
+<text x="894" y="1492" class="tk">phone 3.3V → EN (W12); R1 4.7 kΩ EN→GND</text>
+<text x="894" y="1506" class="tk">holds it LOW when the phone is off.</text>
+<text x="894" y="1520" class="tw">⚠ PS pad: LOW = power-save at idle</text>
+<text x="894" y="1534" class="note">⚠ set the 3V3 jumper — it ships selectable</text>
+<circle cx="1040" cy="1540" r="8" fill="#fff" stroke="#7d3fbf" stroke-width="2.5"/><text x="1000" y="1558" class="pin" font-weight="bold">EN</text>
+
+<!-- power wires -->
+<!-- W4: PB 5V -> header 5V ; lane x=336 -->
+<polyline class="w5v" points="560,1312 560,1260 336,1260 336,286 291,286"/>
+<rect x="342" y="1236" width="30" height="16" rx="3" fill="#c0392b"/><text x="347" y="1248" class="wtag">W4</text>
+<!-- W5: PB GND -> header GND ; lane x=312 -->
+<polyline class="wgnd" points="620,1312 620,1282 312,1282 312,400 291,400"/>
+<rect x="378" y="1286" width="30" height="16" rx="3" fill="#444"/><text x="383" y="1298" class="wtag">W5</text>
+<!-- W6: PB 5V -> D1 -> buck-boost VIN (v2: through the OR diode) -->
+<polyline class="w5v" points="560,1312 560,1240 920,1240 920,1312"/>
+<rect x="620" y="1230" width="54" height="20" fill="#fff" stroke="#111" stroke-width="2"/>
+<text x="626" y="1244" class="tk">D1 ▶|</text>
+<rect x="700" y="1216" width="30" height="16" rx="3" fill="#c0392b"/><text x="705" y="1228" class="wtag">W6</text>
+<circle cx="560" cy="1260" r="4" fill="#c0392b"/>
+<!-- W20 (v2): header VBAT -> D2 -> joins W6 at the OR node -->
+<polyline class="wbat" points="291,324 740,324 740,1240"/>
+<rect x="560" y="314" width="54" height="20" fill="#fff" stroke="#111" stroke-width="2"/>
+<text x="566" y="328" class="tk">D2 ▶|</text>
+<rect x="390" y="314" width="34" height="17" rx="3" fill="#8b1a1a"/><text x="396" y="327" class="wtag">W20</text>
+<circle cx="740" cy="1240" r="4.5" fill="#8b1a1a"/>
+<text x="470" y="1200" class="tw">OR node</text>
+<text x="470" y="1186" class="ts">higher source wins</text>
+<!-- W7: PB GND -> TLV GND -->
+<polyline class="wgnd" points="620,1312 620,1258 980,1258 980,1312"/>
+<rect x="740" y="1262" width="30" height="16" rx="3" fill="#444"/><text x="745" y="1274" class="wtag">W7</text>
+<circle cx="620" cy="1282" r="4" fill="#444"/>
+<!-- 3V3 rail: W8 TLV 3V3 -> RFM pad13 ; lane x=1185 -->
+<polyline class="w33" points="1100,1312 1100,1230 1185,1230 1185,386 1150,386"/>
+<line x1="1150" y1="386" x2="1078" y2="386" class="w33"/>
+<rect x="1191" y="800" width="30" height="16" rx="3" fill="#e07b00"/><text x="1196" y="812" class="wtag">W8</text>
+<!-- W10 branch to GPS pwr -->
+<polyline class="w33" points="1185,966 720,966 720,1108 782,1108"/>
+<circle cx="1185" cy="966" r="4" fill="#e07b00"/>
+<rect x="900" y="944" width="34" height="17" rx="3" fill="#e07b00"/><text x="906" y="957" class="wtag">W10</text>
+<!-- W9: GND to RFM pad10 ; lane x=1165 via y=1215 -->
+<polyline class="wgnd" points="620,1258 620,1215 1165,1215 1165,494 1128,494"/>
+<line x1="1128" y1="494" x2="1078" y2="494" class="wgnd"/>
+<circle cx="620" cy="1258" r="4" fill="#444"/>
+<rect x="1171" y="820" width="30" height="16" rx="3" fill="#444"/><text x="1176" y="832" class="wtag">W9</text>
+<!-- W11: GND to GPS gnd, branch from W9 run -->
+<polyline class="wgnd" points="770,1215 770,1072 782,1072"/>
+<circle cx="770" cy="1215" r="4" fill="#444"/>
+<rect x="726" y="1150" width="34" height="17" rx="3" fill="#444"/><text x="732" y="1163" class="wtag">W11</text>
+<!-- W12: EN sense: header 3.3V -> TLV EN -->
+<polyline class="wen" points="291,362 360,362 360,1330 270,1330 270,1580 1040,1580 1040,1548"/>
+<rect x="378" y="1560" width="34" height="17" rx="3" fill="#7d3fbf"/><text x="384" y="1573" class="wtag">W12</text>
+<!-- R1 from EN wire node to GND -->
+<circle cx="1040" cy="1560" r="4" fill="#7d3fbf"/>
+<line x1="1040" y1="1560" x2="1090" y2="1560" class="leg"/>
+<rect x="1090" y="1552" width="52" height="16" fill="#fff" stroke="#111" stroke-width="1.8"/>
+<text x="1094" y="1564" class="tk">R1 4.7k</text>
+<polyline class="leg" points="1142,1560 1180,1560 1180,1258"/>
+<polyline class="wgnd" points="980,1258 1180,1258"/>
+<circle cx="980" cy="1258" r="4" fill="#444"/>
+<text x="1188" y="1564" class="ts">to GND</text>
+
+<!-- ===================== RUN LIST + PARTS + CHECKLIST ===================== -->
+<rect x="40" y="1640" width="760" height="530" class="box"/>
+<text x="54" y="1666" class="tt">WIRE RUN LIST — build from this, tick each off on the picture</text>
+<text x="54" y="1694" class="tk" font-weight="bold">#      FROM  (exact pad)                  TO  (exact pad)                     net</text>
+<line x1="54" y1="1702" x2="780" y2="1702" stroke="#999"/>
+<text x="54" y="1722" class="tk">W1   pack JST  +                        F1 polyfuse leg A                  BAT+</text>
+<text x="54" y="1742" class="tk">W2   F1 polyfuse leg B                  PowerBoost JST  +                  BAT+</text>
+<text x="54" y="1762" class="tk">W3   pack JST  −                        PowerBoost JST  −                  GND</text>
+<text x="54" y="1782" class="tk">W4   PowerBoost pad 5V                  Header terminal 5V                 5.2 V</text>
+<text x="54" y="1802" class="tk">W5   PowerBoost pad GND                 Header terminal GND                GND  (heavy)</text>
+<text x="54" y="1822" class="tk">W6   PowerBoost pad 5V   —D1 Schottky—  buck-boost VIN                     5.2 V</text>
+<text x="54" y="1842" class="tk">W7   PowerBoost pad GND                 buck-boost pad GND                 GND</text>
+<text x="54" y="1862" class="tk">W8   buck-boost pad OUT                 RFM95W pad 13  (3.3V)              3V3_PLATE</text>
+<text x="54" y="1882" class="tk">W9   PowerBoost pad GND (bus)           RFM95W pad 10  (GND)               GND</text>
+<text x="54" y="1902" class="tk">W10  buck-boost OUT (tap W8)            GPS pad "5V"                       3V3_PLATE</text>
+<text x="54" y="1922" class="tk">W11  GND bus (tap W9)                   GPS pad GND                        GND</text>
+<text x="54" y="1942" class="tk">W12  Header terminal 3.3V               buck-boost EN (+ R1 4.7k EN→GND)   EN sense</text>
+<text x="54" y="1962" class="tk">W13  Header DB_SPI_MISO (GPIO 12)       RFM95W pad 2   (MISO)              SPI · no R</text>
+<text x="54" y="1982" class="tk">W14  Header DB_SPI_MOSI (GPIO 13)       —R3 1 kΩ—  RFM95W pad 3  (MOSI)    SPI</text>
+<text x="54" y="2002" class="tk">W15  Header DB_SPI_CLK  (GPIO 14)       —R4 1 kΩ—  RFM95W pad 4  (SCK)     SPI</text>
+<text x="54" y="2022" class="tk">W16  Header DB_SPI_CS   (GPIO 27)       —R5 1 kΩ—  RFM95W pad 5  (NSS)     SPI</text>
+<text x="54" y="2042" class="tk">W17  GPS pad TX                         Header DB_RXD  (GPIO 38)           UART ⚠ crosses · no R</text>
+<text x="54" y="2062" class="tk">W18  GPS pad RX                         —R6 1 kΩ—  Header DB_TXD (GPIO 32) UART ⚠ crosses</text>
+<text x="54" y="2082" class="tk">W19  RFM95W pad 9 ANT (coax center;     u.FL/851 → SMA panel → whip        RF · ≤5 mm</text>
+<text x="97" y="2100" class="tk">braid → pad 10)</text>
+<text x="54" y="2120" class="tk" font-weight="bold">W20  Header terminal VBAT  —D2 Schottky—  joins W6 at the OR node        VBAT ⚠ NEW in v2</text>
+<text x="54" y="2144" class="tk" font-weight="bold">+ R7 10 kΩ RFM pad 5 NSS ↔ pad 13 3.3V — not a wire to the phone, but tick it here: without it a phone RESET</text>
+<text x="76" y="2160" class="tk" font-weight="bold">with the plate powered can strap GPIO 12 (MTDI) high and the phone fails to boot</text>
+
+<rect x="830" y="1640" width="330" height="565" class="box"/>
+<text x="844" y="1666" class="tt">Small parts — where each leg goes</text>
+<text x="844" y="1694" class="tk" font-weight="bold">C1  100 nF</text><text x="844" y="1710" class="tk">RFM pad 13 ↔ RFM pad 10 (short!)</text>
+<text x="844" y="1734" class="tk" font-weight="bold">C2  10 µF</text><text x="844" y="1750" class="tk">RFM pad 13 ↔ RFM pad 10</text>
+<text x="844" y="1774" class="tk" font-weight="bold">C3  100 nF</text><text x="844" y="1790" class="tk">GPS "5V" pad ↔ GPS GND pad</text>
+<text x="844" y="1814" class="tk" font-weight="bold">C4  22–47 µF</text><text x="844" y="1830" class="tk">GPS "5V" pad ↔ GPS GND pad</text>
+<text x="844" y="1848" class="note">all ceramic — NO polarity to get wrong</text>
+<text x="844" y="1876" class="tk" font-weight="bold">R1  4.7 kΩ</text><text x="844" y="1892" class="tk">buck-boost EN pad ↔ GND</text>
+<text x="844" y="1916" class="tk" font-weight="bold">R2  10 kΩ (optional)</text><text x="844" y="1932" class="tk">RFM pad 6 RESET ↔ 3V3_PLATE</text>
+<text x="844" y="1946" class="note">stock plate leaves RESET floating; fine to omit</text>
+<text x="844" y="1968" class="tk" font-weight="bold">R3–R6  4× 1 kΩ  (series, IN the wire)</text>
+<text x="844" y="1984" class="tk">W14 MOSI · W15 SCK · W16 NSS · W18 GPS-RX</text>
+<text x="844" y="2000" class="tk">(the phone-driven lines; W13 &amp; W17 get none)</text>
+<text x="844" y="2022" class="tk" font-weight="bold">R7  10 kΩ  — REQUIRED (added 2026-08-22)</text>
+<text x="844" y="2038" class="tk">RFM pad 5 NSS ↔ 3V3_PLATE — holds NSS up while the</text>
+<text x="844" y="2054" class="tk">phone resets; GPIO 12 is a boot strap (MTDI)</text>
+<text x="844" y="2076" class="tk" font-weight="bold">D1, D2  Schottky (1N5819 / SS14 / BAT54) — v2</text>
+<text x="844" y="2092" class="tk">D1 in W6 (PowerBoost 5V leg), D2 in W20 (VBAT leg);</text>
+<text x="844" y="2108" class="tk">both CATHODES (banded end) → buck-boost VIN</text>
+<text x="844" y="2130" class="tk" font-weight="bold">F1  polyfuse 3 A hold - GF300 (NOT 1 A - see BOM)</text>
+<text x="844" y="2146" class="tk">in the pack's + leg, before the JST</text>
+<text x="844" y="2166" class="tk" font-weight="bold">Not fitted, on purpose:</text>
+<text x="844" y="2180" class="ts">DIO0–DIO5 wires · PB EN/LBO/BAT/USB pads ·</text>
+<text x="844" y="2192" class="ts">USB-A jack · level shifters (all-3.3 V logic)</text>
+
+<rect x="1190" y="1640" width="406" height="565" class="chk"/>
+<text x="1204" y="1666" class="tt">BEFORE FIRST POWER — in order</text>
+<text x="1204" y="1696" class="tk">1. Count the plate's terminals against this sheet</text>
+<text x="1216" y="1712" class="note">(published list matched; physical plate not yet counted)</text>
+<text x="1204" y="1738" class="tk">2. Bench-prove the 5V terminal accepts power IN:</text>
+<text x="1216" y="1754" class="tk">plate off phone, no USB — 5 V supply, 200 mA limit,</text>
+<text x="1216" y="1770" class="tk">onto the 5V pogo pin: phone must show charging.</text>
+<text x="1216" y="1786" class="note">validates the whole architecture (inferred from the Mega, not measured)</text>
+<text x="1204" y="1812" class="tk">3. Meter the phone's 3.3V pin with the phone OFF —</text>
+<text x="1216" y="1828" class="tk">must be 0 V (the EN gate depends on it), and ON —</text>
+<text x="1216" y="1844" class="tk">must be 3.3 V (ENABLE_DAUGHTER_33V never asserted;</text>
+<text x="1216" y="1860" class="tk">stock plate works, so it should be live).</text>
+<text x="1204" y="1886" class="tk">4. Measure buck-boost EN open-circuit + pull-up;</text>
+<text x="1216" y="1902" class="tk">with R1 4.7k fitted and phone off, EN must sit &lt; 0.4 V.</text>
+<text x="1204" y="1928" class="tk">5. Continuity: pad 14 DIO0 to ANYTHING = must be OPEN.</text>
+<text x="1204" y="1954" class="tk">6. Antenna screwed on BEFORE the first boot.</text>
+<text x="1204" y="1984" class="tk" font-weight="bold">Polarity double-checks:</text>
+<text x="1204" y="2000" class="tk">JST red = + — verify with a meter anyway;</text>
+<text x="1204" y="2016" class="tk">"off-white or black JST" shells vary (Adafruit's words)</text>
+<text x="1204" y="2040" class="tk" font-weight="bold">Firmware: READY, dormant (2026-08-20).</text>
+<text x="1204" y="2056" class="tk">After assembly: serial `gps on` (once, persists), then</text>
+<text x="1204" y="2072" class="tk">`gps` — bytes/sentences/fix counters diagnose the bench.</text>
+<text x="1204" y="2100" class="tw">7. v2 — METER VBAT BEFORE WIRING W20:</text>
+<text x="1216" y="2116" class="tk">header VBAT → GND must read the phone's own cell</text>
+<text x="1216" y="2132" class="tk">(3.7–4.2 V) and TRACK it as the phone discharges.</text>
+<text x="1216" y="2148" class="tk">This pin has never carried current on this plate.</text>
+<text x="1204" y="2168" class="tw">8. Meter D1 and D2 polarity — band toward VIN.</text>
+<text x="1216" y="2184" class="tk">D2 backwards = 4.9 V back-charging the phone's cell.</text>
+
+<!-- footer -->
+<text x="40" y="2232" class="note">Junction dots mark every real connection; crossings without dots are not connected. Wire colors are nets, not insulation colors — use what you have, but label W# on flag tape.</text>
+<text x="40" y="2248" class="note">Print A3 portrait. Sources: HopeRF RFM95W-V2.0 DS (pads), WiPhone Header Breakout doc (terminals), Adafruit 2465/4711 (pads), woods-backplate.md + -bom.md (architecture, 2026-08-11).</text>
+</svg>

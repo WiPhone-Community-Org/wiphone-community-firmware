@@ -1,0 +1,20 @@
+{
+  "name": "WiPhone",
+  "version": "0.9.81-NH",
+  "new_install_prompt_erase": false,
+  "builds": [
+    {
+      "chipFamily": "ESP32",
+      "parts": [
+        {
+          "path": "wiphone-boot.bin",
+          "offset": 4096
+        },
+        {
+          "path": "wiphone-app.bin",
+          "offset": 57344
+        }
+      ]
+    }
+  ]
+}

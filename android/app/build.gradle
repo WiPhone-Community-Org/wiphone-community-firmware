@@ -1,0 +1,62 @@
+plugins {
+    id 'com.android.application'
+}
+
+// Release signing comes from OUTSIDE the repo: ~/.gradle/gradle.properties (or -P on the command
+// line) names the keystore and its passwords. Without them a release build is left unsigned, so
+// anyone can build it and sign it with their own key.
+def signProp = { String k -> project.hasProperty(k) ? project.property(k) : null }
+def haveReleaseKey = signProp('NHCOMPANION_STORE_FILE') != null
+
+android {
+    namespace 'io.github.nikguy321.nhcompanion'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'io.github.nikguy321.nhcompanion'
+        minSdk 26
+        targetSdk 35
+        versionCode 3
+        versionName '1.2'
+    }
+
+    signingConfigs {
+        if (haveReleaseKey) {
+            release {
+                storeFile file(signProp('NHCOMPANION_STORE_FILE'))
+                storePassword signProp('NHCOMPANION_STORE_PASSWORD')
+                keyAlias signProp('NHCOMPANION_KEY_ALIAS')
+                keyPassword signProp('NHCOMPANION_KEY_PASSWORD')
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt')
+            if (haveReleaseKey) {
+                signingConfig signingConfigs.release
+            }
+        }
+    }
+
+    buildFeatures {
+        buildConfig true
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+
+    lint {
+        abortOnError true
+        warningsAsErrors false
+    }
+}
+
+dependencies {
+    testImplementation 'junit:junit:4.13.2'
+}

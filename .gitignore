@@ -1,0 +1,48 @@
+# PlatformIO build output
+.pio/
+
+# Personal SPIFFS backups (device data dumps)
+backups/
+
+# macOS
+.DS_Store
+
+# Python
+*.pyc
+__pycache__/
+
+# Personal notes (keep local, not on GitHub)
+NOTES.md
+
+# JPEG test fixtures are extracted from a BOUGHT book and this repo is public.
+# Regenerate with tools/gen_jpeg_fixtures.sh <book.epub>.
+tests/fixtures/jpeg/
+
+# MP3 decoder fixture is a slice of a real track and this repo is public.
+# Regenerate with tools/gen_mp3_fixtures.sh <file.mp3>.
+tests/fixtures/mp3/
+
+# T9 source corpus. Not committed: it is 612 KB of input that produces a committed
+# 275 KB output, and the generated header records the source URL and a SHA-256 of this
+# file, so a regeneration is provable without carrying the corpus in the history.
+# Refetch with tools/t9-corpus/FETCH.md.
+tools/t9-corpus/*.txt
+
+# Transient host-test scratch files: the bookstore tests write a store, reload it and leave
+# it behind. Untracked noise in `git status` right before a deploy is exactly what the
+# handoff warns about, so keep them out of the way.
+tests/fixtures/_store*.tsv
+
+# Claude Code worktrees and local settings
+.claude/
+
+# API keys live on the device cards and outside every repo - never in this public repo
+gemini.txt
+Gemini.txt
+GEMINI.txt
+/API Keys/
+chutes.txt
+Chutes.txt
+
+launch.json
+c_cpp_properties.json

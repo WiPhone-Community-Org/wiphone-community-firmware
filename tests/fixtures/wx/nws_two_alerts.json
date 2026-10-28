@@ -1,0 +1,380 @@
+{
+    "@context": [
+        "https://geojson.org/geojson-ld/geojson-context.jsonld",
+        {
+            "@version": "1.1",
+            "wx": "https://api.weather.gov/ontology#",
+            "@vocab": "https://api.weather.gov/ontology#"
+        }
+    ],
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "id": "https://api.weather.gov/alerts/urn:oid:2.49.0.1.840.0.0000000000000000000000000000000000000001.001.1",
+            "type": "Feature",
+            "geometry": {
+                "type": "Polygon",
+                "coordinates": [
+                    [
+                        [
+                            -122.32,
+                            47.61
+                        ],
+                        [
+                            -122.32,
+                            47.61
+                        ],
+                        [
+                            -122.32,
+                            47.62
+                        ],
+                        [
+                            -122.32,
+                            47.62
+                        ],
+                        [
+                            -122.33,
+                            47.62
+                        ],
+                        [
+                            -122.33,
+                            47.62
+                        ],
+                        [
+                            -122.33,
+                            47.62
+                        ],
+                        [
+                            -122.33,
+                            47.62
+                        ],
+                        [
+                            -122.34,
+                            47.62
+                        ],
+                        [
+                            -122.34,
+                            47.62
+                        ],
+                        [
+                            -122.34,
+                            47.61
+                        ],
+                        [
+                            -122.34,
+                            47.61
+                        ],
+                        [
+                            -122.34,
+                            47.61
+                        ],
+                        [
+                            -122.34,
+                            47.61
+                        ],
+                        [
+                            -122.34,
+                            47.6
+                        ],
+                        [
+                            -122.34,
+                            47.6
+                        ],
+                        [
+                            -122.33,
+                            47.6
+                        ],
+                        [
+                            -122.33,
+                            47.6
+                        ],
+                        [
+                            -122.33,
+                            47.6
+                        ],
+                        [
+                            -122.33,
+                            47.6
+                        ],
+                        [
+                            -122.32,
+                            47.6
+                        ],
+                        [
+                            -122.32,
+                            47.6
+                        ],
+                        [
+                            -122.32,
+                            47.61
+                        ],
+                        [
+                            -122.32,
+                            47.61
+                        ]
+                    ]
+                ]
+            },
+            "properties": {
+                "@id": "https://api.weather.gov/alerts/urn:oid:2.49.0.1.840.0.0000000000000000000000000000000000000001.001.1",
+                "@type": "wx:Alert",
+                "id": "urn:oid:2.49.0.1.840.0.0000000000000000000000000000000000000001.001.1",
+                "areaDesc": "Example County, XX; Sample County, XX",
+                "geocode": {
+                    "SAME": [
+                        "000001",
+                        "000002"
+                    ],
+                    "UGC": [
+                        "XXC001",
+                        "XXC002"
+                    ]
+                },
+                "affectedZones": [
+                    "https://api.weather.gov/zones/county/XXC001",
+                    "https://api.weather.gov/zones/county/XXC002"
+                ],
+                "references": [],
+                "sent": "2026-10-03T18:09:00-04:00",
+                "effective": "2026-10-03T18:09:00-04:00",
+                "onset": "2026-10-03T18:09:00-04:00",
+                "expires": "2026-10-03T20:15:00-04:00",
+                "ends": "2026-10-03T20:15:00-04:00",
+                "status": "Actual",
+                "messageType": "Alert",
+                "category": "Met",
+                "severity": "Severe",
+                "certainty": "Likely",
+                "urgency": "Immediate",
+                "event": "Flash Flood Warning",
+                "sender": "w-nws.webmaster@noaa.gov",
+                "senderName": "NWS Example Office",
+                "headline": "Flash Flood Warning issued October 3 at 6:09PM EDT until October 3 at 8:15PM EDT by NWS Example Office",
+                "description": "At 609 PM EDT, Doppler radar indicated heavy rain due to thunderstorms. Flash flooding is ongoing or expected to begin shortly. Between 2 and 4 inches of rain have fallen.\n\nHAZARD...Flash flooding caused by thunderstorms.\n\nSOURCE...Radar indicated.\n\nIMPACT...Flooding of small creeks and streams, urban areas, highways, streets and underpasses as well as other drainage and low lying areas.\n\nSome locations that will experience flash flooding include...\nExample Town, Sample Village, Northfield, Southfield, Eastbrook, Westbrook, Lakeside, Riverside, Hillcrest and Valley View.\n\nAdditional rainfall amounts of 1 to 2 inches are possible in the warned area.",
+                "instruction": "Turn around, don't drown when encountering flooded roads. Most flood deaths occur in vehicles.",
+                "response": "Avoid",
+                "note": null,
+                "parameters": {
+                    "AWIPSidentifier": [
+                        "FFWXXX"
+                    ],
+                    "WMOidentifier": [
+                        "WGUS00 KXXX 032209"
+                    ],
+                    "flashFloodDetection": [
+                        "RADAR INDICATED"
+                    ],
+                    "BLOCKCHANNEL": [
+                        "EAS",
+                        "NWEM",
+                        "CMAS"
+                    ],
+                    "EAS-ORG": [
+                        "WXR"
+                    ],
+                    "VTEC": [
+                        "/O.NEW.KXXX.FF.W.0036.261003T2209Z-261004T0015Z/"
+                    ],
+                    "eventEndingTime": [
+                        "2026-10-03T20:15:00-04:00"
+                    ]
+                },
+                "scope": "Public",
+                "code": "IPAWSv1.0",
+                "language": "en-US",
+                "web": "http://www.weather.gov",
+                "eventCode": {
+                    "SAME": [
+                        "FFW"
+                    ],
+                    "NationalWeatherService": [
+                        "FFW"
+                    ]
+                }
+            }
+        },
+        {
+            "id": "https://api.weather.gov/alerts/urn:oid:2.49.0.1.840.0.0000000000000000000000000000000000000002.001.1",
+            "type": "Feature",
+            "geometry": {
+                "type": "Polygon",
+                "coordinates": [
+                    [
+                        [
+                            -122.32,
+                            47.61
+                        ],
+                        [
+                            -122.32,
+                            47.61
+                        ],
+                        [
+                            -122.32,
+                            47.62
+                        ],
+                        [
+                            -122.32,
+                            47.62
+                        ],
+                        [
+                            -122.33,
+                            47.62
+                        ],
+                        [
+                            -122.33,
+                            47.62
+                        ],
+                        [
+                            -122.33,
+                            47.62
+                        ],
+                        [
+                            -122.33,
+                            47.62
+                        ],
+                        [
+                            -122.34,
+                            47.62
+                        ],
+                        [
+                            -122.34,
+                            47.62
+                        ],
+                        [
+                            -122.34,
+                            47.61
+                        ],
+                        [
+                            -122.34,
+                            47.61
+                        ],
+                        [
+                            -122.34,
+                            47.61
+                        ],
+                        [
+                            -122.34,
+                            47.61
+                        ],
+                        [
+                            -122.34,
+                            47.6
+                        ],
+                        [
+                            -122.34,
+                            47.6
+                        ],
+                        [
+                            -122.33,
+                            47.6
+                        ],
+                        [
+                            -122.33,
+                            47.6
+                        ],
+                        [
+                            -122.33,
+                            47.6
+                        ],
+                        [
+                            -122.33,
+                            47.6
+                        ],
+                        [
+                            -122.32,
+                            47.6
+                        ],
+                        [
+                            -122.32,
+                            47.6
+                        ],
+                        [
+                            -122.32,
+                            47.61
+                        ],
+                        [
+                            -122.32,
+                            47.61
+                        ]
+                    ]
+                ]
+            },
+            "properties": {
+                "@id": "https://api.weather.gov/alerts/urn:oid:2.49.0.1.840.0.0000000000000000000000000000000000000002.001.1",
+                "@type": "wx:Alert",
+                "id": "urn:oid:2.49.0.1.840.0.0000000000000000000000000000000000000002.001.1",
+                "areaDesc": "Example County, XX; Sample County, XX",
+                "geocode": {
+                    "SAME": [
+                        "000001",
+                        "000002"
+                    ],
+                    "UGC": [
+                        "XXC001",
+                        "XXC002"
+                    ]
+                },
+                "affectedZones": [
+                    "https://api.weather.gov/zones/county/XXC001",
+                    "https://api.weather.gov/zones/county/XXC002"
+                ],
+                "references": [],
+                "sent": "2026-10-03T18:02:00-04:00",
+                "effective": "2026-10-03T18:02:00-04:00",
+                "onset": "2026-10-03T18:02:00-04:00",
+                "expires": "2026-10-03T21:00:00-04:00",
+                "ends": "2026-10-03T21:00:00-04:00",
+                "status": "Actual",
+                "messageType": "Alert",
+                "category": "Met",
+                "severity": "Minor",
+                "certainty": "Likely",
+                "urgency": "Expected",
+                "event": "Flood Advisory",
+                "sender": "w-nws.webmaster@noaa.gov",
+                "senderName": "NWS Example Office",
+                "headline": "Flood Advisory issued October 3 at 6:02PM EDT until October 3 at 9:00PM EDT by NWS Example Office",
+                "description": "* WHAT...Urban and small stream flooding caused by excessive rainfall is expected.\n\n* WHERE...Portions of the example region, including the following counties, Example and Sample.\n\n* WHEN...Until 900 PM EDT.\n\n* IMPACTS...Minor flooding in low-lying and poor drainage areas. Water over roadways. Overflowing poor drainage areas.\n\n* ADDITIONAL DETAILS...\n- At 602 PM EDT, Doppler radar indicated heavy rain due to thunderstorms. Minor flooding is ongoing or expected to begin shortly in the advisory area. Between 1 and 3 inches of rain have fallen.\n- Additional rainfall amounts up to 1 inch are expected over the area. This additional rain will result in minor flooding.\n- Some locations that will experience flooding include...\nExample Town, Sample Village, Northfield, Southfield and Lakeside.",
+                "instruction": "Turn around, don't drown when encountering flooded roads. Most flood deaths occur in vehicles.",
+                "response": "Avoid",
+                "note": null,
+                "parameters": {
+                    "AWIPSidentifier": [
+                        "FLSXXX"
+                    ],
+                    "WMOidentifier": [
+                        "WGUS00 KXXX 032209"
+                    ],
+                    "NWSheadline": [
+                        "FLOOD ADVISORY IN EFFECT UNTIL 9 PM EDT THIS EVENING"
+                    ],
+                    "BLOCKCHANNEL": [
+                        "EAS",
+                        "NWEM",
+                        "CMAS"
+                    ],
+                    "VTEC": [
+                        "/O.NEW.KXXX.FA.Y.0309.261003T2202Z-261004T0100Z/"
+                    ],
+                    "eventEndingTime": [
+                        "2026-10-03T21:00:00-04:00"
+                    ]
+                },
+                "scope": "Public",
+                "code": "IPAWSv1.0",
+                "language": "en-US",
+                "web": "http://www.weather.gov",
+                "eventCode": {
+                    "SAME": [
+                        "NWS"
+                    ],
+                    "NationalWeatherService": [
+                        "FAY"
+                    ]
+                }
+            }
+        }
+    ],
+    "title": "Current watches, warnings, and advisories for (scrubbed)",
+    "updated": "2026-10-03T22:13:26+00:00"
+}

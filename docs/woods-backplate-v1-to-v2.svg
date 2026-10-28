@@ -1,0 +1,183 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 1080" font-family="Helvetica,Arial,sans-serif">
+<!-- ============================================================================
+  WOODS BACKPLATE - WHAT CHANGED FROM v1  (companion to woods-backplate-wiring.svg)
+  {user}, 2026-08-23: "I have to check each wire and each pad to make sure, since I
+  don't know exactly what has changed besides switching out that power buck."
+  So this sheet is ONLY the delta. Every line below was derived from the repo's own
+  history - the v1 run list at 613ce68^ diffed against the current sheet - not from
+  memory. If a wire is not named here, it did not change.
+============================================================================= -->
+<style>
+  .bg{fill:#ffffff}
+  .tt{font-size:17px;font-weight:bold;fill:#111}
+  .h{font-size:14px;font-weight:bold;fill:#111}
+  .t{font-size:13px;fill:#111}
+  .ts{font-size:11.5px;fill:#444}
+  .tw{font-size:12px;fill:#b03030;font-weight:bold}
+  .note{font-size:11px;fill:#666}
+  .new{fill:#eafaf1;stroke:#1e8a5a;stroke-width:2}
+  .chg{fill:#fff4e6;stroke:#c47a1a;stroke-width:2}
+  .same{fill:#f4f4f4;stroke:#999;stroke-width:1.5}
+  .warn{fill:#fdeaea;stroke:#b03030;stroke-width:2}
+  .chk{fill:#fffbe8;stroke:#8a7a1e;stroke-width:2}
+  .box{fill:#fff;stroke:#333;stroke-width:2}
+  .w5v{stroke:#c0392b;stroke-width:2.6;fill:none}
+  .wbat{stroke:#8b1a1a;stroke-width:2.6;fill:none}
+  .w33{stroke:#e07b00;stroke-width:2.4;fill:none}
+  .wgnd{stroke:#444;stroke-width:3;fill:none}
+  .dead{stroke:#bbb;stroke-width:2.6;fill:none;stroke-dasharray:6 5}
+  .badge{font-size:11px;font-weight:bold;fill:#fff}
+</style>
+<rect x="0" y="0" width="1400" height="1080" class="bg"/>
+
+<text x="24" y="34" class="tt">WiPhone woods backplate — WHAT CHANGED FROM v1</text>
+<text x="24" y="54" class="ts">Read this next to the plate you already built. It is ONLY the delta — if a wire is not named here, it did not change.</text>
+<text x="24" y="70" class="note">Derived from the repo's own history (v1 run list at 613ce68^ diffed against the current sheet), not from memory. Full detail: woods-backplate-wiring.svg</text>
+
+<!-- legend -->
+<rect x="24" y="84" width="1352" height="34" fill="#f7f7f7" stroke="#bbb" stroke-width="1.5"/>
+<rect x="36" y="93" width="16" height="16" class="new"/><text x="58" y="106" class="ts">NEW part or wire — did not exist in v1</text>
+<rect x="330" y="93" width="16" height="16" class="chg"/><text x="352" y="106" class="ts">CHANGED — the wire stays, an END of it moves</text>
+<rect x="700" y="93" width="16" height="16" class="same"/><text x="722" y="106" class="ts">UNCHANGED — leave it alone</text>
+<text x="980" y="106" class="tw">5 new parts · 1 new wire · 1 module swapped · 0 wires deleted</text>
+
+<!-- ============================ THE RAIL ============================ -->
+<rect x="24" y="134" width="700" height="404" class="warn"/>
+<text x="40" y="160" class="tt">1 · THE RAIL — the big one, and the only structural change</text>
+<text x="40" y="180" class="ts">v1 fed the plate from the PowerBoost ALONE. Pack dies → radio and GPS die, while the phone lives on for hours.</text>
+<text x="40" y="196" class="ts">v2 ORs in the phone's own cell, so a dead pack no longer takes the radio with it. No logic, no firmware — two diodes.</text>
+
+<!-- v1 strip -->
+<text x="40" y="228" class="h">v1 — as you built it</text>
+<rect x="40" y="240" width="150" height="46" class="box"/>
+<text x="52" y="262" class="t" font-weight="bold">PowerBoost</text><text x="52" y="278" class="ts">1000C · 5.2 V</text>
+<line x1="190" y1="263" x2="270" y2="263" class="w5v"/>
+<rect x="206" y="245" width="34" height="16" rx="3" fill="#c0392b"/><text x="212" y="257" class="badge">W6</text>
+<rect x="270" y="240" width="150" height="46" class="box"/>
+<text x="282" y="262" class="t" font-weight="bold">TLV62569</text><text x="282" y="278" class="ts">BUCK — needs &gt;3.4 V in</text>
+<line x1="420" y1="263" x2="500" y2="263" class="w33"/>
+<rect x="436" y="245" width="34" height="16" rx="3" fill="#e07b00"/><text x="442" y="257" class="badge">W8</text>
+<text x="506" y="268" class="t">3V3_PLATE → radio + GPS</text>
+<text x="40" y="304" class="ts">Header VBAT terminal: <tspan font-weight="bold">UNUSED</tspan> — nothing landed on it.</text>
+
+<!-- v2 strip -->
+<text x="40" y="342" class="h">v2 — what it becomes</text>
+<rect x="40" y="354" width="150" height="46" class="box"/>
+<text x="52" y="376" class="t" font-weight="bold">PowerBoost</text><text x="52" y="392" class="ts">1000C · 5.2 V — kept</text>
+<polyline class="w5v" points="190,377 230,377 230,410 270,410"/>
+<rect x="196" y="359" width="34" height="16" rx="3" fill="#c0392b"/><text x="202" y="371" class="badge">W6</text>
+<rect x="236" y="401" width="30" height="18" fill="#fff" stroke="#111" stroke-width="2"/>
+<text x="241" y="415" class="ts" font-weight="bold">D1</text>
+<rect x="270" y="386" width="160" height="48" class="new"/>
+<text x="282" y="408" class="t" font-weight="bold">TPS63020</text><text x="282" y="425" class="ts">BUCK-BOOST — no floor</text>
+<rect x="40" y="454" width="150" height="42" class="box"/>
+<text x="52" y="474" class="t" font-weight="bold">Header VBAT</text><text x="52" y="489" class="ts">the phone's own cell</text>
+<polyline class="wbat" points="190,472 230,472 230,432 270,432"/>
+<rect x="196" y="454" width="40" height="16" rx="3" fill="#8b1a1a"/><text x="200" y="466" class="badge">W20</text>
+<rect x="236" y="423" width="30" height="18" fill="#fff" stroke="#111" stroke-width="2"/>
+<text x="241" y="437" class="ts" font-weight="bold">D2</text>
+<line x1="430" y1="410" x2="500" y2="410" class="w33"/>
+<rect x="440" y="392" width="34" height="16" rx="3" fill="#e07b00"/><text x="446" y="404" class="badge">W8</text>
+<text x="506" y="404" class="t">3V3_PLATE → radio + GPS</text>
+<text x="506" y="422" class="ts">unchanged at this end</text>
+<text x="40" y="516" class="tw">Higher source wins. Pack alive → 5.2 V through D1. Pack dead → VBAT through D2.</text>
+
+<!-- ============================ CHANGE TABLE ============================ -->
+<rect x="744" y="134" width="632" height="404" class="box"/>
+<text x="760" y="160" class="tt">2 · EVERY WIRE THAT CHANGED</text>
+<text x="760" y="180" class="ts">Six wires touched. Five of them only because the module they land on changed.</text>
+
+<rect x="760" y="192" width="600" height="22" fill="#eef3fb"/>
+<text x="768" y="207" class="ts" font-weight="bold">WIRE</text>
+<text x="836" y="207" class="ts" font-weight="bold">v1</text>
+<text x="1060" y="207" class="ts" font-weight="bold">v2 — what to do</text>
+
+<rect x="760" y="216" width="600" height="26" class="new"/>
+<text x="768" y="234" class="t" font-weight="bold">W20</text>
+<text x="836" y="234" class="ts">did not exist</text>
+<text x="1060" y="234" class="t" font-weight="bold">ADD: Header VBAT —D2— OR node</text>
+
+<rect x="760" y="244" width="600" height="26" class="chg"/>
+<text x="768" y="262" class="t" font-weight="bold">W6</text>
+<text x="836" y="262" class="ts">PowerBoost 5V → TLV VIN</text>
+<text x="1060" y="262" class="t">cut in <tspan font-weight="bold">D1</tspan>, land on buck-boost VIN</text>
+
+<rect x="760" y="272" width="600" height="26" class="chg"/>
+<text x="768" y="290" class="t" font-weight="bold">W7</text>
+<text x="836" y="290" class="ts">PowerBoost GND → TLV GND</text>
+<text x="1060" y="290" class="ts">same wire — move to buck-boost GND</text>
+
+<rect x="760" y="300" width="600" height="26" class="chg"/>
+<text x="768" y="318" class="t" font-weight="bold">W8</text>
+<text x="836" y="318" class="ts">TLV 3V3 → RFM pad 13</text>
+<text x="1060" y="318" class="ts">same wire — move to buck-boost OUT</text>
+
+<rect x="760" y="328" width="600" height="26" class="chg"/>
+<text x="768" y="346" class="t" font-weight="bold">W10</text>
+<text x="836" y="346" class="ts">TLV 3V3 tap → GPS "5V"</text>
+<text x="1060" y="346" class="ts">same wire — tap buck-boost OUT</text>
+
+<rect x="760" y="356" width="600" height="26" class="chg"/>
+<text x="768" y="374" class="t" font-weight="bold">W12</text>
+<text x="836" y="374" class="ts">Header 3.3V → TLV EN</text>
+<text x="1060" y="374" class="ts">same wire — move to buck-boost EN</text>
+
+<rect x="760" y="392" width="600" height="60" class="new"/>
+<text x="768" y="410" class="t" font-weight="bold">W14 · W15 · W16 · W18</text>
+<text x="768" y="428" class="ts">v1: straight through, no series part</text>
+<text x="768" y="444" class="t" font-weight="bold">CUT IN A 1 kΩ: R3 MOSI · R4 SCK · R5 NSS · R6 GPS-RX</text>
+
+<rect x="760" y="458" width="600" height="30" class="new"/>
+<text x="768" y="478" class="t" font-weight="bold">R7 10 kΩ — RFM pad 5 (NSS) ↔ pad 13 (3V3). Not a run wire; a pull-up across two pads.</text>
+
+<text x="760" y="508" class="tw">⚠ W13 (MISO) and W17 (GPS TX) get NO resistor — the far end drives them, not the phone.</text>
+<text x="760" y="526" class="ts">Every other wire is untouched. See panel 3.</text>
+
+<!-- ============================ UNCHANGED ============================ -->
+<rect x="24" y="558" width="700" height="180" class="same"/>
+<text x="40" y="584" class="tt">3 · DO NOT TOUCH — unchanged from v1</text>
+<text x="40" y="606" class="ts">Confirmed by diffing the run lists. Nothing below moved, changed end, or gained a part.</text>
+<text x="40" y="632" class="t">W1  pack JST + → F1 polyfuse</text>
+<text x="40" y="652" class="t">W2  F1 → PowerBoost JST +</text>
+<text x="40" y="672" class="t">W3  pack JST − → PowerBoost JST −</text>
+<text x="40" y="692" class="t">W4  PowerBoost 5V → Header 5V</text>
+<text x="40" y="712" class="t">W5  PowerBoost GND → Header GND</text>
+<text x="392" y="632" class="t">W9   PowerBoost GND bus → RFM pad 10</text>
+<text x="392" y="652" class="t">W11  GND bus → GPS pad GND</text>
+<text x="392" y="672" class="t">W13  DB_SPI_MISO → RFM pad 2  (no R)</text>
+<text x="392" y="692" class="t">W17  GPS TX → DB_RXD  (no R)</text>
+<text x="392" y="712" class="t">W19  RFM pad 9 ANT → coax / SMA</text>
+
+<!-- ============================ CHECKLIST ============================ -->
+<rect x="744" y="558" width="632" height="180" class="chk"/>
+<text x="760" y="584" class="tt">4 · REWORK CHECKLIST — in order</text>
+<rect x="762" y="600" width="13" height="13" fill="#fff" stroke="#111" stroke-width="1.6"/>
+<text x="786" y="612" class="t">Bench the TPS63020 OFF the plate first: set its <tspan font-weight="bold">3V3 jumper</tspan> (ships unset)</text>
+<rect x="762" y="622" width="13" height="13" fill="#fff" stroke="#111" stroke-width="1.6"/>
+<text x="786" y="634" class="t">Tie <tspan font-weight="bold">PS LOW</tspan> — power-save at idle. Never leave it floating.</text>
+<rect x="762" y="644" width="13" height="13" fill="#fff" stroke="#111" stroke-width="1.6"/>
+<text x="786" y="656" class="t">Meter header <tspan font-weight="bold">VBAT → GND</tspan>: must read the phone cell, 3.7–4.2 V, and TRACK it</text>
+<rect x="762" y="666" width="13" height="13" fill="#fff" stroke="#111" stroke-width="1.6"/>
+<text x="786" y="678" class="t">Fit D1 and D2 — <tspan class="tw">meter the band orientation, cathodes toward VIN</tspan></text>
+<rect x="762" y="688" width="13" height="13" fill="#fff" stroke="#111" stroke-width="1.6"/>
+<text x="786" y="700" class="t">Move W7 / W8 / W10 / W12 onto the buck-boost; add W20</text>
+<rect x="762" y="710" width="13" height="13" fill="#fff" stroke="#111" stroke-width="1.6"/>
+<text x="786" y="722" class="t">Cut in R3–R6, then R7 across RFM pads 5 ↔ 13</text>
+
+<!-- ============================ WHY ============================ -->
+<rect x="24" y="758" width="1352" height="150" class="warn"/>
+<text x="40" y="784" class="tt">5 · WHY THE RESISTORS EXIST — measured, not precautionary</text>
+<text x="40" y="808" class="t">Pack dead + phone alive: the phone's driven pins <tspan font-weight="bold">back-feed the plate through its ESD clamps</tspan>.</text>
+<text x="40" y="828" class="t">Measured 2026-08-22 — 3V3_PLATE floated at <tspan font-weight="bold">2.54 V</tspan>, the 5 V node at 2.18 V, backwards through the TLV.</text>
+<text x="40" y="848" class="t">An RFM95W runs at 2.5 V. It answered its version probe, the phone said READY, RX worked — and TX was silently impossible.</text>
+<text x="40" y="868" class="tw">That is the failure this whole revision exists to kill: a radio that reads healthy and cannot transmit.</text>
+<text x="40" y="890" class="ts">1 kΩ caps each clamp at ~2 mA, so the rail collapses instead of floating, and absence reads as absence. R7 holds NSS high while the plate is unpowered (GPIO 12 is a boot strap).</text>
+
+<!-- ============================ FOOTER ============================ -->
+<rect x="24" y="926" width="1352" height="128" class="chk"/>
+<text x="40" y="952" class="tt">6 · WHAT THIS SHEET DOES NOT CHANGE</text>
+<text x="40" y="976" class="t">The PowerBoost <tspan font-weight="bold">stays</tspan>. It still charges the phone through W4 and still charges its own pack over its microUSB.</text>
+<text x="40" y="996" class="t">Nothing in v2 removes a charging path — v2 only adds a second SOURCE for the plate's own 3.3 V rail.</text>
+<text x="40" y="1016" class="t">F1 is already a <tspan font-weight="bold">GF300, 3 A hold</tspan>, fitted — that change landed before this revision and needs no rework.</text>
+<text x="40" y="1040" class="note">Pad-level detail, every leg and every unused pad: woods-backplate-wiring.svg · Parts: woods-backplate-bom.md · Rationale: woods-backplate.md</text>
+</svg>

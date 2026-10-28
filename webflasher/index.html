@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WiPhone Firmware Installer</title>
+<style>
+  :root { color-scheme: dark; }
+  body {
+    margin: 0; padding: 40px 16px; background: #0d121e; color: #e8eef7;
+    font: 16px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif;
+    display: flex; justify-content: center;
+  }
+  main { max-width: 620px; }
+  h1 { font-size: 28px; margin: 0 0 4px; }
+  .ver { color: #4ade80; font-weight: 600; margin-bottom: 24px; }
+  .card { background: #182030; border-radius: 14px; padding: 20px 22px; margin: 14px 0; }
+  .card h2 { font-size: 17px; margin: 0 0 8px; color: #9db0c9; }
+  ol { margin: 8px 0 0; padding-left: 22px; }
+  li { margin: 6px 0; }
+  code { background: #0d121e; border-radius: 6px; padding: 1px 6px; }
+  .muted { color: #8b98ad; font-size: 14px; }
+  .install { text-align: center; padding: 26px 22px; }
+  button {
+    font: 600 17px system-ui; color: #fff; background: #15803d; border: 0;
+    border-radius: 10px; padding: 12px 26px; cursor: pointer;
+  }
+  button:disabled { background: #3a4456; cursor: default; }
+  button.danger { background: #7f1d1d; font-size: 14px; padding: 9px 18px; }
+  #status { margin-top: 14px; min-height: 22px; font-size: 15px; }
+  #bar { height: 8px; background: #0d121e; border-radius: 4px; margin-top: 10px;
+         overflow: hidden; display: none; }
+  #fill { height: 100%; width: 0%; background: #4ade80; transition: width .2s; }
+  a { color: #60b3ff; }
+  details { margin-top: 18px; }
+  summary { cursor: pointer; color: #8b98ad; font-size: 14px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>WiPhone Firmware Installer</h1>
+  <div class="ver" id="ver">Loading version…</div>
+
+  <div class="card install">
+    <p>Plug the WiPhone into this computer with a USB cable, then:</p>
+    <button id="install">Install / Update</button>
+    <div id="status"></div>
+    <div id="bar"><div id="fill"></div></div>
+    <p class="muted"><b>Your data stays.</b> Updating never touches saved WiFi networks,
+      SIP accounts, contacts, messages, settings, or anything on the SD card.</p>
+    <details>
+      <summary>Advanced: factory reset install (erases ALL data)</summary>
+      <p class="muted">This wipes every setting, contact and message on the phone before
+        installing — only for a phone you want factory-fresh. It will ask you to confirm.</p>
+      <button class="danger" id="erase">Erase everything and install</button>
+    </details>
+  </div>
+
+  <div class="card">
+    <h2>If the phone doesn't show up</h2>
+    <ol>
+      <li>Use <b>Chrome</b> or <b>Edge</b> on a computer — other browsers cannot flash.</li>
+      <li>Use a USB cable that carries <b>data</b> — many charging cables don't.</li>
+      <li>Close anything else using the serial port (serial monitors, IDEs).
+        An error like <code>Failed to execute 'open' on 'SerialPort'</code> means
+        another program is holding the port right now.</li>
+      <li>On Windows, install the
+        <a href="https://www.silabs.com/developer-tools/usb-to-uart-bridge-vcp-drivers">CP210x</a>
+        or <a href="https://www.wch-ic.com/downloads/CH341SER_ZIP.html">CH340</a> driver,
+        then replug.</li>
+      <li>Keep the phone powered on while flashing, and keep this page open until it
+        says it finished.</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h2>What this does</h2>
+    <p class="muted">Your browser talks to the phone over USB (Web Serial) and writes the
+      firmware directly — nothing to install, no Python, no command line. The phone
+      reboots itself when it finishes.</p>
+  </div>
+</main>
+
+<script type="module">
+/* Direct esptool-js, NOT ESP Web Tools — a deliberate choice with a story. ESP Web Tools
+ * treats any device it cannot identify over Improv serial as a "new installation" and,
+ * with new_install_prompt_erase unset/false, ERASES THE WHOLE CHIP without asking. The
+ * WiPhone speaks no Improv, so every flash was a silent factory reset — the first field
+ * test lost the tester's WiFi networks, SIP account, contacts and message history.
+ * Driving esptool-js ourselves means erase happens exactly when the user explicitly
+ * chooses it below, and never otherwise. */
+/* The library is SERVED FROM THIS SITE (webflasher/THIRD_PARTY.md), not fetched from a CDN:
+ * the installer then works when the CDN does not, and tests/check_webflasher_split.py checks
+ * every `loader.*(` / `transport.*(` this page calls against the bytes actually served. The
+ * 0.9.79-NH page called `loader.after()`, which 0.4.5 does not have: the write had finished,
+ * the reset threw, the page said "Failed" and the phone sat dark in the bootloader. */
+import { ESPLoader, Transport } from "./esptool-js-0.4.5.bundle.js";
+
+const $ = (id) => document.getElementById(id);
+let manifest = null;
+
+fetch("manifest.json").then(r => r.json()).then(m => {
+  manifest = m;
+  $("ver").textContent = "Latest version: " + m.version + " — installs in about a minute";
+}).catch(() => { $("ver").textContent = "Could not load version info"; });
+
+function status(t) { $("status").textContent = t; }
+function progress(pct) {
+  $("bar").style.display = "block";
+  $("fill").style.width = pct + "%";
+}
+
+async function fetchBinary(path) {
+  const r = await fetch(path);
+  if (!r.ok) throw new Error("could not download " + path);
+  const buf = new Uint8Array(await r.arrayBuffer());
+  let s = "";
+  const CH = 8192;                       // esptool-js wants a binary string
+  for (let i = 0; i < buf.length; i += CH) {
+    s += String.fromCharCode.apply(null, buf.subarray(i, i + CH));
+  }
+  return s;
+}
+
+/* 🛑 NEVER WRITE OVER NVS: it holds the mesh identity key, the book-sync passcode and name,
+ * the KOSync memo and the WiFi calibration. Through 0.9.78 the one merged image covered it
+ * with 0xFF padding and wiped every updater's settings. The range comes from the partition
+ * table inside the parts themselves (at 0x8000); the WiPhone's standard layout is the
+ * fallback when no part carries the table. */
+function nvsRange(files) {
+  const f = files.find(f => f.address <= 0x8000 && 0x8000 + 32 <= f.address + f.data.length);
+  if (f) {
+    const base = 0x8000 - f.address;
+    const u8 = (i) => f.data.charCodeAt(base + i) & 0xff;
+    const u32 = (i) => (u8(i) | u8(i + 1) << 8 | u8(i + 2) << 16 | u8(i + 3) << 24) >>> 0;
+    for (let i = 0; i + 32 <= 0xc00 && base + i + 32 <= f.data.length; i += 32) {
+      if (u8(i) !== 0xaa || u8(i + 1) !== 0x50) break;            // end of the table
+      if (u8(i + 2) === 0x01 && u8(i + 3) === 0x02) {               // data / nvs
+        return [u32(i + 4), u32(i + 4) + u32(i + 8)];
+      }
+    }
+  }
+  return [0x9000, 0xe000];
+}
+
+async function flash(eraseFirst) {
+  const btns = [$("install"), $("erase")];
+  btns.forEach(b => b.disabled = true);
+  let transport = null;
+  try {
+    if (!manifest) throw new Error("version info did not load - refresh the page");
+    status("Pick the phone's serial port in the dialog…");
+    const port = await navigator.serial.requestPort();
+    transport = new Transport(port, true);
+    const loader = new ESPLoader({ transport, baudrate: 460800, romBaudrate: 115200 });
+    status("Connecting to the phone…");
+    await loader.main();
+
+    if (eraseFirst) {
+      status("Erasing all data (this takes a while)…");
+      await loader.eraseFlash();
+    }
+
+    // EVERY part, not just the first: the image comes in two pieces that step around nvs
+    // (make_webflasher.sh), and writing parts[0] alone would install only the bootloader.
+    status("Downloading firmware…");
+    const files = [];
+    for (const part of manifest.builds[0].parts) {
+      files.push({ data: await fetchBinary(part.path), address: part.offset });
+    }
+    const nvs = nvsRange(files);
+    for (const f of files) {
+      if (f.address < nvs[1] && f.address + f.data.length > nvs[0]) {
+        throw new Error("this installer build would overwrite the phone's settings - "
+                        + "nothing was written. Please report it");
+      }
+    }
+
+    // Progress over all parts, weighted by size (esptool-js reports each part 0..100%).
+    const total = files.reduce((n, f) => n + f.data.length, 0);
+    let before = 0;
+    const starts = files.map(f => { const s = before; before += f.data.length; return s; });
+    status("Installing… keep this page open");
+    await loader.writeFlash({
+      fileArray: files,
+      flashSize: "keep", flashMode: "keep", flashFreq: "keep",
+      eraseAll: false, compress: true,
+      reportProgress: (idx, written, size) =>
+        progress(Math.round((starts[idx] + files[idx].data.length * (size ? written / size : 0))
+                            / total * 100)),
+    });
+
+    /* The firmware is on the phone from here on. Whatever the reset below does, the message
+     * must say so: a failed reset is a phone sitting dark in the bootloader with a good
+     * install, and "Failed... try again" sent a tester through the whole install twice. */
+    status("Done - rebooting the phone…");
+    let restarted = true;
+    try {
+      await loader.hardReset();          // RTS pulse: EN low, then high - into the new firmware
+    } catch (e) {
+      restarted = false;
+    }
+    status(restarted
+      ? "✅ Installed " + manifest.version + ". The phone is restarting - unplug it whenever you like."
+      : "✅ Installed " + manifest.version + ", but the phone did not restart by itself: unplug it "
+        + "and plug it back in (or hold the power button) and it will boot the new firmware.");
+  } catch (e) {
+    const msg = String(e && e.message || e);
+    if (msg.includes("would overwrite the phone's settings")) {
+      status("Stopped: " + msg + ".");
+    } else if (msg.includes("No port selected")) {
+      status("No port was chosen. Plug the phone in and try again.");
+    } else if (msg.includes("open") && msg.includes("SerialPort")) {
+      status("The port is held by another program (a serial monitor or IDE). Close it, "
+             + "replug the cable, and try again.");
+    } else {
+      status("Failed: " + msg + " - unplug, replug, and try again.");
+    }
+  } finally {
+    try { if (transport) await transport.disconnect(); } catch (_) {}
+    btns.forEach(b => b.disabled = false);
+  }
+}
+
+$("install").onclick = () => flash(false);
+$("erase").onclick = () => {
+  if (confirm("This ERASES every setting, contact and message on the phone and installs "
+              + "fresh. There is no undo. Continue?")) {
+    flash(true);
+  }
+};
+</script>
+</body>
+</html>

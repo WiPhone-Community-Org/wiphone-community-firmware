@@ -1,0 +1,6 @@
+{
+    "port": "/dev/tty.usbserial-01E8E72D",
+    "configuration": "PSRAM=enabled,PartitionScheme=default,UploadSpeed=921600,DebugLevel=none",
+    "board": "WiPhone:esp32:wiphone",
+    "sketch": "WiPhone/WiPhone.ino"
+}
