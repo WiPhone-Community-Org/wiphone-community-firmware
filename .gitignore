@@ -14,6 +14,10 @@ __pycache__/
 # Personal notes (keep local, not on GitHub)
 NOTES.md
 
+# Scanner reports may contain copies or previews of sensitive values
+scan-report.json
+*-scan-report.json
+
 # JPEG test fixtures are extracted from a BOUGHT book and this repo is public.
 # Regenerate with tools/gen_jpeg_fixtures.sh <book.epub>.
 tests/fixtures/jpeg/
