@@ -1,0 +1,10 @@
+{
+  "id": "photos",
+  "title": "Photos",
+  "group": "tools",
+  "factory": "PhotosAppCreate",
+  "implementation": "apps/photos/app_photos.cpp",
+  "registered": true,
+  "menuId": 48,
+  "parent": "tools"
+}

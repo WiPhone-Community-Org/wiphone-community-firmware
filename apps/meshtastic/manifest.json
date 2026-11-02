@@ -1,0 +1,10 @@
+{
+  "id": "meshtastic",
+  "title": "Meshtastic",
+  "group": "main",
+  "factory": "MeshtasticAppCreate",
+  "implementation": "apps/meshtastic/app_meshtastic.cpp",
+  "registered": true,
+  "menuId": 39,
+  "parent": "main"
+}

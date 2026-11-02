@@ -1,0 +1,10 @@
+{
+  "id": "books",
+  "title": "Books",
+  "group": "main",
+  "factory": "BooksAppCreate",
+  "implementation": "apps/books/app_books.cpp",
+  "registered": true,
+  "menuId": 41,
+  "parent": "main"
+}

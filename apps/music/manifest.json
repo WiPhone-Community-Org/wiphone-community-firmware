@@ -1,0 +1,10 @@
+{
+  "id": "music",
+  "title": "Music",
+  "group": "main",
+  "factory": "MusicAppCreate",
+  "implementation": "apps/music/app_music.cpp",
+  "registered": true,
+  "menuId": 42,
+  "parent": "main"
+}

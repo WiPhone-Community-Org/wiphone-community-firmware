@@ -1,0 +1,10 @@
+{
+  "id": "maps",
+  "title": "Maps",
+  "group": "main",
+  "factory": "MapsAppCreate",
+  "implementation": "apps/maps/app_maps.cpp",
+  "registered": true,
+  "menuId": 50,
+  "parent": "main"
+}

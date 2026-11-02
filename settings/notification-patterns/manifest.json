@@ -1,0 +1,11 @@
+{
+  "id": "notification-patterns",
+  "title": "Notification patterns",
+  "owner": "core",
+  "storageKey": "notification-pattern",
+  "type": "Enumeration",
+  "implementation": "settings/notification-patterns/notification_patterns.cpp",
+  "registered": true,
+  "load": "NotificationPatternsLoad",
+  "save": "NotificationPatternsSave"
+}

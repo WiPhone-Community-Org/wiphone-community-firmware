@@ -1,0 +1,10 @@
+{
+  "id": "game-boy",
+  "title": "Game Boy",
+  "group": "games",
+  "factory": "GbcAppCreate",
+  "implementation": "apps/game-boy/app_gbc.cpp",
+  "registered": true,
+  "menuId": 40,
+  "parent": "games"
+}

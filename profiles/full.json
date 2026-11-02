@@ -1,0 +1,15 @@
+{
+  "name": "full",
+  "apps": [
+    "ai",
+    "almanac",
+    "books",
+    "files",
+    "game-boy",
+    "maps",
+    "meshtastic",
+    "music",
+    "photos"
+  ],
+  "settings": ["vibration-patterns", "notification-patterns"]
+}

@@ -1,0 +1,11 @@
+{
+  "id": "vibration-patterns",
+  "title": "Vibration patterns",
+  "owner": "core",
+  "storageKey": "vibration-pattern",
+  "type": "Enumeration",
+  "implementation": "settings/vibration-patterns/vibration_patterns.cpp",
+  "registered": true,
+  "load": "VibrationPatternsLoad",
+  "save": "VibrationPatternsSave"
+}

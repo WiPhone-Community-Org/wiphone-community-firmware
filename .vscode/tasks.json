@@ -1,0 +1,76 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "WiPhone: Select PlatformIO Profile",
+            "type": "shell",
+            "command": "python3 tools/select_build_profile.py --profile ${input:wiphoneProfile} --target platformio",
+            "problemMatcher": []
+        },
+        {
+            "label": "WiPhone: Build PlatformIO Profile",
+            "dependsOn": "WiPhone: Select PlatformIO Profile",
+            "type": "shell",
+            "command": "pio run -e wiphone-full -t upload",
+            "problemMatcher": []
+        },
+        {
+            "label": "WiPhone: Select Arduino Profile",
+            "type": "shell",
+            "command": "python3 tools/select_build_profile.py --profile ${input:wiphoneProfile} --target arduino",
+            "problemMatcher": []
+        },
+        {
+            "label": "WiPhone: Select Custom Profile",
+            "type": "shell",
+            "command": "python3 tools/select_build_profile.py --name ${input:wiphoneCustomName} --apps \"${input:wiphoneApps}\" --settings \"${input:wiphoneSettings}\" --target platformio",
+            "problemMatcher": []
+        },
+        {
+            "label": "WiPhone: Select Custom Arduino Profile",
+            "type": "shell",
+            "command": "python3 tools/select_build_profile.py --name ${input:wiphoneCustomName} --apps \"${input:wiphoneApps}\" --settings \"${input:wiphoneSettings}\" --target arduino",
+            "problemMatcher": []
+        },
+        {
+            "label": "WiPhone: Open Visual Profile Builder",
+            "type": "shell",
+            "command": "python3 -u tools/profile_picker.py",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "focus": false,
+                "close": false
+            }
+        }
+    ],
+    "inputs": [
+        {
+            "id": "wiphoneProfile",
+            "type": "pickString",
+            "description": "WiPhone build profile",
+            "options": ["full", "core", "books-only"]
+        },
+        {
+            "id": "wiphoneCustomName",
+            "type": "promptString",
+            "description": "Custom profile name",
+            "default": "custom"
+        },
+        {
+            "id": "wiphoneApps",
+            "type": "promptString",
+            "description": "Comma-separated app IDs (ai, almanac, books, files, game-boy, maps, meshtastic, music, photos)",
+            "default": "meshtastic,maps,books"
+        },
+        {
+            "id": "wiphoneSettings",
+            "type": "promptString",
+            "description": "Comma-separated setting IDs (notification-patterns, vibration-patterns)",
+            "default": ""
+        }
+    ]
+}

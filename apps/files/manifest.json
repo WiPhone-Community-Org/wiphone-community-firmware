@@ -1,0 +1,10 @@
+{
+  "id": "files",
+  "title": "Files",
+  "group": "tools",
+  "factory": "FilesAppCreate",
+  "implementation": "apps/files/app_files.cpp",
+  "registered": true,
+  "menuId": 46,
+  "parent": "tools"
+}

@@ -1,0 +1,10 @@
+{
+  "id": "almanac",
+  "title": "Almanac",
+  "group": "main",
+  "factory": "AlmanacAppCreate",
+  "implementation": "apps/almanac/app_almanac.cpp",
+  "registered": true,
+  "menuId": 52,
+  "parent": "main"
+}

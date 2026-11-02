@@ -13,6 +13,7 @@ governing permissions and limitations under the License.
 */
 
 #include "GUI.h"
+#include "../shared/generated_extension_registry.h"
 #include "tinySIP.h"
 #include "ota.h"
 #include "Test.h"
@@ -2486,30 +2487,46 @@ void GUI::enterApp(ActionID_t app) {
   case GUI_APP_MESSAGES:
     runningApp = new MessagesApp(*screen, state, flash, header, footer);
     break;
+#ifdef WIPHONE_APP_MESHTASTIC
   case GUI_APP_MESHTASTIC:
     runningApp = new MeshtasticApp(*screen, state, header, footer);
     break;
+#endif
+#ifdef WIPHONE_APP_BOOKS
   case GUI_APP_BOOKS:
     runningApp = new BooksApp(*screen, state, header, footer);
     break;
+#endif
+#ifdef WIPHONE_APP_FILES
   case GUI_APP_FILES:
     runningApp = new FilesApp(*screen, state, header, footer);
     break;
+#endif
+#ifdef WIPHONE_APP_PHOTOS
   case GUI_APP_PHOTOS:
     runningApp = new PhotosApp(*screen, state, header, footer);
     break;
+#endif
+#ifdef WIPHONE_APP_MAPS
   case GUI_APP_MAPS:
     runningApp = new MapsApp(*screen, state, header, footer);
     break;
+#endif
+#ifdef WIPHONE_APP_ALMANAC
   case GUI_APP_ALMANAC:
     runningApp = new AlmanacApp(*screen, state, header, footer);
     break;
+#endif
+#ifdef WIPHONE_APP_AI
   case GUI_APP_AI:
     runningApp = new AiApp(*screen, state, header, footer);
     break;
+#endif
+#ifdef WIPHONE_APP_MUSIC
   case GUI_APP_MUSIC:
     runningApp = new MusicApp(*screen, state, header, footer);
     break;
+#endif
   case GUI_APP_SIP_ACCOUNTS:
     runningApp = new SipAccountsApp(*screen, state, flash, header, footer);
     break;
@@ -2522,9 +2539,11 @@ void GUI::enterApp(ActionID_t app) {
   case GUI_APP_DIGITAL_RAIN:
     runningApp = new DigitalRainApp(lcd, state);
     break;
+#ifdef WIPHONE_APP_GAME_BOY
   case GUI_APP_GBC:
     runningApp = new GbcApp(lcd, state);
     break;
+#endif
   case GUI_APP_UART_PASS:
     runningApp = new UartPassthroughApp(lcd, state, header, footer);
     break;

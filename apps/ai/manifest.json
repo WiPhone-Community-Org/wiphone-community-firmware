@@ -1,0 +1,10 @@
+{
+  "id": "ai",
+  "title": "AI",
+  "group": "main",
+  "factory": "AiAppCreate",
+  "implementation": "apps/ai/app_ai.cpp",
+  "registered": true,
+  "menuId": 53,
+  "parent": "main"
+}
