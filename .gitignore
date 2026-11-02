@@ -50,3 +50,5 @@ Chutes.txt
 
 launch.json
 c_cpp_properties.json
+
+build/
