@@ -1,9 +1,0 @@
-{
-  "name": "custom",
-  "apps": [
-    "books"
-  ],
-  "settings": [
-    "vibration-patterns"
-  ]
-}
