@@ -52,3 +52,6 @@ launch.json
 c_cpp_properties.json
 
 build/
+profiles/
+
+.vscode/arduino.json
